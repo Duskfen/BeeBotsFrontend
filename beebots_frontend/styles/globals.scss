@@ -1,0 +1,52 @@
+:root{
+   --neutral: #2980b9;
+   --good: hsl(145, 63%, 42%);
+   --bad: #e74c3c;
+}
+
+@font-face {
+   font-family: MerriweatherSans;
+   src: url('fonts/MerriweatherSans-VariableFont_wght.ttf');
+}
+@font-face {
+   font-family: Imprima;
+   src: url('fonts/Imprima-Regular.ttf');
+}
+@font-face {
+   font-family: Cambay;
+   src: url('fonts/Cambay-Regular.ttf');
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+h1{
+   font-family: MerriweatherSans;
+   font-size: 3.7em;
+   font-weight: 700;
+   color: #111;
+}
+h2{
+   font-family: Imprima;
+   font-size: 2em;
+   color: #222; 
+}
+
+p{
+   font-family: Cambay;
+   font-size: 1.25em;
+   color: #444;
+   margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
