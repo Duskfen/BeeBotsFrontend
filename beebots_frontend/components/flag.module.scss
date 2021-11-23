@@ -3,31 +3,29 @@
    display: flex;
    justify-content: space-around;
    align-items: center;
-   background-color: transparent !important;
-   margin:auto;
-   box-shadow: none;
 }
 
 .flag{
    margin:auto;
    position:fixed;
-   bottom: var(--def_margin);
+   top: var(--def_margin);
+   right: var(--def_margin);
    z-index: 5;
-   width: 100%;
-   display: flex;
+   width:300px;
+   font-size:11pt;
 }
 
-._flag-error{
-   background-color: var(--bad);
+._flag-error div{
+   border: 1px solid var(--bad);
 }
 
-._flag-success{
-   background-color: var(--good);
+._flag-success div{
+   border: 1px solid var(--good);
 
 }
-._flag-warning{
-   background-color: var(--warning);
+._flag-warning div{
+   border: 1px solid var(--warning);
 }
-._flag-information{
-   background-color: var(--neutral);
+._flag-information div{
+   border: 1px solid var(--neutral);
 }
