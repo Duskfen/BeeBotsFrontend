@@ -4,6 +4,7 @@ import Box from '../components/box'
 export default function Styleguide() {
   return (
     <div>
+       <h1>Styleguide</h1>
       <Box>
          <p>Typography:</p>
          <h1>H1 Heading</h1>
