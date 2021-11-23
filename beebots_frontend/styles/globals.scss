@@ -2,6 +2,10 @@
    --neutral: #2980b9;
    --good: hsl(145, 63%, 42%);
    --bad: #e74c3c;
+   --warning: #f1c40f;
+   --def_padding: 10px;
+   --def_margin: 10px;
+   --def_borderRadius: 3px;
 }
 
 @font-face {
@@ -16,11 +20,11 @@
    font-family: Cambay;
    src: url('fonts/Cambay-Regular.ttf');
 }
-
 html,
 body {
   padding: 0;
   margin: 0;
+  background-color: #fff;
 }
 
 h1{
@@ -30,12 +34,12 @@ h1{
    color: #111;
 }
 h2{
-   font-family: Imprima;
+   font-family: MerriweatherSans;
    font-size: 2em;
-   color: #222; 
+   color: #111; 
 }
 
-p{
+p,a, button{
    font-family: Cambay;
    font-size: 1.25em;
    color: #444;
@@ -43,10 +47,14 @@ p{
 }
 
 a {
-  color: inherit;
+  color: var(--neutral);
   text-decoration: none;
+}
+a:hover{
+   text-decoration: underline;
 }
 
 * {
   box-sizing: border-box;
+  transition: 0.1s;
 }
