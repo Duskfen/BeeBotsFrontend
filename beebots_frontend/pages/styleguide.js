@@ -63,7 +63,7 @@ export default function Styleguide() {
                      <div style={{display: "flex", justifyContent: "center", flexWrap: "wrap"}}>
                         {[0,1,2,3,4].map((i) => {
                           return(
-                           <Box>
+                           <Box key={`beelogo_${i}`}>
                               <Box style={{width: "20px"}}>
                                  <Beelogo sad={true} i={i}></Beelogo>
                               </Box>
