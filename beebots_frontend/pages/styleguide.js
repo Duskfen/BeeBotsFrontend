@@ -1,10 +1,11 @@
 import styles from '../styles/Styleguide.module.scss'
 import Box from '../components/box'
 import Button from '../components/button';
+import Beelogo from '../components/beelogo';
 import Flag from '../components/flag';
 import React, { useState } from 'react';
 
-   // '_flag-error', '_flag-success', '_flag-warning', '_flag-information'
+
    let flagType = '_flag-error';
    let message = 'test';
 
@@ -59,7 +60,21 @@ export default function Styleguide() {
 
                   <Box>
                      <p>Logo</p>
-                     <p>todo</p>
+                     <div style={{display: "flex", justifyContent: "center", flexWrap: "wrap"}}>
+                        {[0,1,2,3,4].map((i) => {
+                          return(
+                           <Box>
+                              <Box style={{width: "20px"}}>
+                                 <Beelogo sad={true} i={i}></Beelogo>
+                              </Box>
+                              <Box style={{width: "20px"}}>
+                                 <Beelogo i={i}></Beelogo>
+                              </Box>
+                           </Box>
+                          ) 
+                        })}
+
+                     </div>
                   </Box>
 
                   <Box>

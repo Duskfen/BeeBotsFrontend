@@ -6,11 +6,12 @@ import Information from '../icons/information.svg';
 import Error from '../icons/error.svg';
 import Success from '../icons/success.svg';
 import Cancle from '../icons/cancle.svg';
-import Image from 'next/image'
+import Image from 'next/image';
 
 export default function Flag({ children, style, setShowFlag, flagType, message="No Message" }) {
 
-   setTimeout(() => setShowFlag(false), 10000);
+   //TODO maybe handle this through a the wrapper component
+   setTimeout(() => setShowFlag(false), 100000);
 
    let icon = Error;
 
@@ -34,11 +35,12 @@ export default function Flag({ children, style, setShowFlag, flagType, message="
 
    return (
       <div className={[styles.flag, styles[flagType]].join(" ")} style={style}>
-         <Image src={icon} width={"30px"} alt={flagType}/>
+         <Image src={icon} width={"20px"} alt={flagType}/>
          <Box>
             <p>{message}</p>
+            {children}
          </Box>
-         <Image className={"clickable"} width={"30px"} src={Cancle} onClick={() => {setShowFlag(false); setShowFlag= () => {};}} alt={"Cancle"}/>
+         <Image className={"clickable"} width={"20px"} src={Cancle} onClick={() => {setShowFlag(false); setShowFlag= () => {};}} alt={"Cancle"}/>
       </div>
    )
 }
