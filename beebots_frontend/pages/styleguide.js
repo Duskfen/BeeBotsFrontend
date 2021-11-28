@@ -4,15 +4,17 @@ import Button from '../components/button';
 import Flag from '../components/flag';
 import React, { useState } from 'react';
 
+   // '_flag-error', '_flag-success', '_flag-warning', '_flag-information'
+   let flagType = '_flag-error';
+   let message = 'test';
+
 export default function Styleguide() {
 
    const [showFlag, setShowFlag] = useState(false);
-   // '_flag-error', '_flag-success', '_flag-warning', '_flag-information'
-   let flagType = '_flag-error';
 
    return (
       <>
-         {showFlag ? <Flag setShowFlag={setShowFlag} flagType={flagType}></Flag> : null}
+         {showFlag ? <Flag setShowFlag={setShowFlag} flagType={flagType} message={message}></Flag> : null}
          <div>
             <h1>Styleguide</h1>
             <Box>
@@ -48,18 +50,21 @@ export default function Styleguide() {
                   </Box>
 
                   <Box>
-                     <p>Flag</p>
-                     <Button onClick={(e) => {setShowFlag(true); flagType = "_flag-error"; console.log("shoflag")}}>Error Flag</Button>
+                     <p>Flags</p>
+                     <Button onClick={(e) => {flagType = "_flag-error"; message= "test error Message"; setShowFlag(true);}}>Error Flag</Button>
+                     <Button onClick={(e) => {flagType = "_flag-success"; message= "test success Message"; setShowFlag(true);}}>Success Flag</Button>
+                     <Button onClick={(e) => {flagType = "_flag-warning"; message= "test warning Message"; setShowFlag(true);}}>Warning Flag</Button>
+                     <Button onClick={(e) => {flagType = "_flag-information"; message= "test information Message"; setShowFlag(true);}}>Information Flag</Button>
                   </Box>
 
                   <Box>
                      <p>Logo</p>
-                     <Button>Default</Button>
+                     <p>todo</p>
                   </Box>
 
                   <Box>
                      <p>Spinner</p>
-                     <Button>Default</Button>
+                      <p>todo</p>
                   </Box>
                </div>
             </Box>

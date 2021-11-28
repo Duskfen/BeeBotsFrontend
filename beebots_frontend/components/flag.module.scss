@@ -1,31 +1,37 @@
 .flag div{
-   min-height: 100px;
+   min-height: inherit;
+   max-width:280px;
    display: flex;
    justify-content: space-around;
    align-items: center;
+   background-color: transparent;
+   box-shadow:none;
 }
 
 .flag{
-   margin:auto;
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
    position:fixed;
    top: var(--def_margin);
    right: var(--def_margin);
    z-index: 5;
-   width:300px;
    font-size:11pt;
+   padding: var(--def_padding);
+   border-radius: var(--def_borderRadius)
 }
 
-._flag-error div{
-   border: 1px solid var(--bad);
+._flag-error{
+   background-color: var(--bad);
 }
 
-._flag-success div{
-   border: 1px solid var(--good);
+._flag-success{
+   background-color: var(--good);
 
 }
-._flag-warning div{
-   border: 1px solid var(--warning);
+._flag-warning{
+   background-color: var(--warning);
 }
-._flag-information div{
-   border: 1px solid var(--neutral);
+._flag-information{
+   background-color: var(--neutral);
 }
