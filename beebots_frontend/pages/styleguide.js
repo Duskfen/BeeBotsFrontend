@@ -5,6 +5,7 @@ import Beelogo from '../components/beelogo';
 import Flag from '../components/flag';
 import Spinner from '../components/spinner';
 import React, { useState } from 'react';
+import Head from 'next/head'
 
 
    let flagType = '_flag-error';
@@ -16,6 +17,9 @@ export default function Styleguide() {
 
    return (
       <>
+         <Head>
+            <title>Beebots Styleguide</title>
+         </Head>
          {showFlag ? <Flag setShowFlag={setShowFlag} flagType={flagType} message={message}></Flag> : null}
          <div>
             <h1>Styleguide</h1>

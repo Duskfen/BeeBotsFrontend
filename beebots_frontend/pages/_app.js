@@ -1,6 +1,8 @@
 import '../styles/globals.scss'
+import styles from '../styles/_app.module.scss'
 import React, { useState } from 'react';
 import LoadingScreen from '../components/loadingScreen';
+import Head from 'next/head'
 
 
 function MyApp({ Component, pageProps }) {
@@ -12,10 +14,21 @@ function MyApp({ Component, pageProps }) {
   }, [])
   
   return (
-   loading?
-   <LoadingScreen></LoadingScreen>:
-   <Component {...pageProps} />
+     <>
+         {loading?
+         <LoadingScreen></LoadingScreen>:(
+         <div className={styles.Content}>
+            <Component {...pageProps} style={{animation: ""}} />
+         </div>)}
+
+         <Head>
+            <title>Beebots</title>
+            <meta name="description" content="Beebots are automated trading Algorithms" />
+            <link rel="icon" href="/favicon.ico" />
+         </Head>
+     </>
    
+
    )
 }
 

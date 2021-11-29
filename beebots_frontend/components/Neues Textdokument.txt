@@ -1,3 +1,4 @@
+//Edit these
 @use "sass:math";
 
 $small: 12; //Number of small dots

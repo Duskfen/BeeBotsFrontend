@@ -1,0 +1,8 @@
+.Content{
+   animation: fadein 0.3s ease-in-out 0s;
+}
+
+@keyframes fadein {
+   from {opacity:0;}
+   to {opaciy:1;}
+}

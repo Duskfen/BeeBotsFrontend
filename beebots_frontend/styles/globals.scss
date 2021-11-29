@@ -11,6 +11,12 @@
 	--dot: radial-gradient(rgb(var(--dotcolor)) 67%, rgba(var(--dotcolor), 0) 68%);
 }
 
+@keyframes fadein {
+   from {opacity:0;}
+   to {opaciy:1;}
+}
+
+
 @font-face {
    font-family: MerriweatherSans;
    src: url('fonts/MerriweatherSans-VariableFont_wght.ttf');
