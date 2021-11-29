@@ -3,6 +3,7 @@ import Box from '../components/box'
 import Button from '../components/button';
 import Beelogo from '../components/beelogo';
 import Flag from '../components/flag';
+import Spinner from '../components/spinner';
 import React, { useState } from 'react';
 
 
@@ -77,10 +78,12 @@ export default function Styleguide() {
                      </div>
                   </Box>
 
-                  {/* <Box>
+                  <Box>
                      <p>Spinner</p>
-                     <p>todo</p>
-                  </Box> */}
+                     <Box style={{display: "flex", justifyContent:"center", alignItems: "center"}}>
+                        <Spinner></Spinner>
+                     </Box>
+                  </Box>
                </div>
             </Box>
 

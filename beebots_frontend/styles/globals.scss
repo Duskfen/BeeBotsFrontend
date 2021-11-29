@@ -6,6 +6,9 @@
    --def_padding: 10px;
    --def_margin: 10px;
    --def_borderRadius: 3px;
+
+   --dotcolor:50, 49, 51;
+	--dot: radial-gradient(rgb(var(--dotcolor)) 67%, rgba(var(--dotcolor), 0) 68%);
 }
 
 @font-face {
