@@ -77,10 +77,10 @@ export default function Styleguide() {
                      </div>
                   </Box>
 
-                  <Box>
+                  {/* <Box>
                      <p>Spinner</p>
-                      <p>todo</p>
-                  </Box>
+                     <p>todo</p>
+                  </Box> */}
                </div>
             </Box>
 

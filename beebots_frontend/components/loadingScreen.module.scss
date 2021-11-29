@@ -1,0 +1,15 @@
+.loadingScreen{
+   position: absolute;
+   z-index: 5;
+   top:0;
+   left:0;
+   width: 100%;
+   height: 100vh;
+   background-color: #fff;
+   animation: fadeinout 1.5s ease-in-out 0s infinite alternate ;
+}
+
+@keyframes fadeinout {
+   from {opacity:0;}
+   to {opaciy:1;}
+}
