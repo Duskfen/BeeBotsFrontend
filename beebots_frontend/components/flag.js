@@ -11,7 +11,7 @@ import Image from 'next/image';
 export default function Flag({ children, style, setShowFlag, flagType, message="No Message" }) {
 
    //TODO maybe handle this through a the wrapper component
-   setTimeout(() => setShowFlag(false), 100000);
+   setTimeout(() => setShowFlag(false), 10000);
 
    let icon = Error;
 
