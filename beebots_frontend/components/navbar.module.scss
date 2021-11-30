@@ -1,0 +1,25 @@
+.sticky{
+   position:sticky;
+   top:0;
+   z-index: 5;
+}
+.nav{
+   min-height: 30px;
+   display: flex;
+   align-items: center;
+
+   ul{
+      list-style: none;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-left: var(--def_margin);
+
+      li{
+         margin-left: 20px;
+      }
+   }
+}
+.Beelogo{
+   margin-left: var(--def_margin);
+}
