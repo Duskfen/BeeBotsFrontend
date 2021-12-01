@@ -20,10 +20,6 @@ export default function Beelogo({sad = false, i = 0, height = '100%', width = '1
     const [svg, setSvg] = useState("<svg> </svg");
 
     useEffect(() => {
-        
-        console.log(i);
-        console.log(colors);
-
         let curcolor = colors[i%(colors.length)];
 
         if(sad) setSvg(beeSad?.value.replaceAll("__COLORPALLETTE__", curcolor));
