@@ -17,9 +17,20 @@
 
       li{
          margin-left: 20px;
+
+         a{
+            color: black;
+            font-weight: bold;
+         }
+         a:hover{
+            text-decoration: none;
+         }
       }
    }
 }
 .Beelogo{
    margin-left: var(--def_margin);
+}
+.activeLink{
+   text-decoration: underline;
 }

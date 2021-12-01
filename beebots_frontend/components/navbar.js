@@ -12,6 +12,8 @@ const menu = [
 ]
 
 export default function Navbar({ children }) {
+   const router = useRouter()
+
    return (
       <>
          <div className={styles.sticky}>
@@ -25,7 +27,10 @@ export default function Navbar({ children }) {
                            {menu.map(({ title, path }) => {
                               return (
                                  <li key={`nav_${path}`}>
-                                    <Link href={path}><a>{title}</a></Link>
+                                    <Link href={path}><a className={`${router.pathname === path
+                                          ? styles.activeLink
+                                          : null
+                                       }`}>{title}</a></Link>
                                  </li>
                               )
                            })}

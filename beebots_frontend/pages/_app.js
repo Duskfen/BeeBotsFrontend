@@ -2,8 +2,9 @@ import '../styles/globals.scss'
 import styles from '../styles/_app.module.scss'
 import React, { useState } from 'react';
 import LoadingScreen from '../components/loadingScreen';
+import Spinner from '../components/spinner';
 import Layout from '../components/layout';
-
+import NextNProgress from "nextjs-progressbar";
 
 function MyApp({ Component, pageProps }) {
    const [loading, setLoading] = useState(true);
@@ -17,11 +18,16 @@ function MyApp({ Component, pageProps }) {
       <>
          {loading ?
             <LoadingScreen></LoadingScreen> : (
-               <div className={styles.Content}>
-                  <Layout>
-                     <Component {...pageProps} style={{ animation: "" }} />
-                  </Layout>
-               </div>)}
+               <>
+                  <NextNProgress color="black" height="2" ></NextNProgress>
+                  <div className={styles.Content}>
+                     <Layout>
+                        <Component {...pageProps} style={{ animation: "" }} />
+                     </Layout>
+                  </div>
+               </>
+               )
+               }
       </>
 
 
