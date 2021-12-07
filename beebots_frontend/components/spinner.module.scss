@@ -2,8 +2,8 @@
 
 $small: 12; //Number of small dots
 $smallsize:10%;
-$big:3; // Number of big dots
-$bigsize:10%;
+$big:5; // Number of big dots
+$bigsize:20%;
 
 //Not these
 $radius:50%-$bigsize;
@@ -96,7 +96,8 @@ $ab:math.div(360deg, $big);
 }
 .spinner {
 		position: relative;
-		// filter: blur(1vmin) contrast(12); //Blur so the dots overlap, then use contrast to make the overlapping blurred parts solid.
+      background-color:white;
+		filter: blur(1vmin) contrast(12); //Blur so the dots overlap, then use contrast to make the overlapping blurred parts solid.
 		&:before, &:after {
 			display:block;
 			content: '';
@@ -107,7 +108,7 @@ $ab:math.div(360deg, $big);
 			background-color:none;
 			background-repeat:no-repeat;
 			animation:spin linear infinite;
-			mix-blend-mode:normal; //:after has a white background, to make it show through use multiply so the black becomes visible
+			mix-blend-mode:multiply; //:after has a white background, to make it show through use multiply so the black becomes visible
 		}
 		&:before {
 			background-image:$smalldots;

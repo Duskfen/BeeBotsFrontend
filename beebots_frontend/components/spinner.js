@@ -2,10 +2,12 @@
 import styles from './spinner.module.scss'
 
 
-export default function LoadingScreen({size = "50px"}) {
+export default function LoadingScreen({size = "600px"}) {
    return (
-     <div className={styles.spinner} style={{width:size, height:size}}>
-     </div>
+      <div>
+         <div className={styles.spinner} style={{width:size, height:size}}>
+         </div>
+      </div>
    )
  }
  
