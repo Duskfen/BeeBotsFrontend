@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 const menu = [
    { title: 'Home', path: '/' },
    { title: 'Styleguide', path: '/styleguide' },
+   { title: 'Bots', path: '/bot'}
 ]
 
 export default function Navbar({ children }) {

@@ -30,8 +30,6 @@ export default function Beelogo({sad = false, i = 0, height = '100%', width = '1
         }
     }, [])
 
-    console.log(svg);
-
    return (
       <div className={styles.imageContainer} style={{width: width, height:height}}>
          <Image src={`data:image/svg+xml;utf8,${encodeURIComponent(svg)}`} layout="fill" className={styles.customImg} objectFit="contain"></Image>

@@ -14,8 +14,7 @@ export default function Layout({ children }) {
             <Navbar>
             </Navbar>
             
-         <main className={styles.restrict}>{children}</main>
-         
+         <main className={styles.restrict + " " + styles.mainbody}>{children}</main>
       </>
    )
 }

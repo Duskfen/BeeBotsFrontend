@@ -1,12 +1,12 @@
 @use "sass:math";
 
-$small: 12; //Number of small dots
-$smallsize:10%;
-$big:5; // Number of big dots
-$bigsize:20%;
+$small: 6; //Number of small dots
+$smallsize:8%;
+$big:6; // Number of big dots
+$bigsize:10%;
 
 //Not these
-$radius:50%-$bigsize;
+$radius:30%-$bigsize;
 $smalldots: ();
 $smalldotpositions: ();
 $smalldotsizes: ();
@@ -120,7 +120,7 @@ $ab:math.div(360deg, $big);
 			background-image:$bigdots;
 			background-position:$bigdotpositions;
 			background-size:$bigdotsizes;
-			animation-duration:5s;
+			animation-duration:4s;
 		}
 	}
 

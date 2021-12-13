@@ -85,7 +85,7 @@ export default function Styleguide() {
                   <Box>
                      <p>Spinner</p>
                      <Box style={{display: "flex", justifyContent:"center", alignItems: "center"}}>
-                        <Spinner></Spinner>
+                        <Spinner size="120px"></Spinner>
                      </Box>
                   </Box>
                </div>
