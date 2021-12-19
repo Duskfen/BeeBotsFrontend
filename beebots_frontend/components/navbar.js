@@ -7,9 +7,8 @@ import Box from '../components/box'
 import { useRouter } from 'next/router'
 
 const menu = [
-   { title: 'Home', path: '/' },
-   { title: 'Styleguide', path: '/styleguide' },
-   { title: 'Bots', path: '/bot'}
+   { title: 'Home', path: '/bot'},
+   { title: 'Styleguide', path: '/styleguide' }
 ]
 
 export default function Navbar({ children }) {
