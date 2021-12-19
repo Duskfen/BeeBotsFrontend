@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Spinner from "../../components/spinner";
 
-export default function Bots({ botname }) {
+export default function Bots({ botdetails, botname, botsId }) {
   const router = useRouter();
   // const {botname} = router.query;
 
@@ -16,6 +16,7 @@ export default function Bots({ botname }) {
   return (
     <>
       <p>botname: {botname}</p>
+      <p>tempdata: {JSON.stringify(botdetails)}</p>
     </>
   );
 }
@@ -30,17 +31,18 @@ function delay(milliseconds) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps({ params }) {
-  //const res = await fetch('https://.../posts')
-  //const posts = await res.json()
-
-  //TODO FETCH Bot with name "params.botname"
-
-  await delay(2000);
+  const body = {
+    id: params.botname,
+    duration: 1
+  }
+  
+  const data = {name: "testdata"}
 
   return {
     props: {
       // posts,
-      botname: params.botname + "test",
+      botdetails: data,
+      botname: params.botname,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
@@ -54,16 +56,19 @@ export async function getStaticProps({ params }) {
 // the path has not been generated.
 export async function getStaticPaths() {
 
+  const res = await fetch(
+    "https://beebotsbackend.azurewebsites.net/api/overview"
+  );
+  const data = await res.json();
 
   // Get the paths we want to pre-render based on posts
   //const paths = posts.map((post) => ({
   //  params: { id: post.id },
   //}))
-  const paths = [
-    { params: { botname: "Bertolomäus" } },
-    { params: { botname: "Josef" } },
-    { params: { botname: "Andreas" } },
-  ];
+
+  const paths = data.map((bot) => ({
+    params: { botname: bot.name },
+  }));
 
   // We'll pre-render only these paths at build time.
   // { fallback: blocking } will server-render pages
