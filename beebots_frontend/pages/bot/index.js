@@ -3,6 +3,9 @@ import Beelogo from "../../components/beelogo";
 import Box from "../../components/box";
 import Page404 from "../404";
 import styles from "./index.module.scss";
+import increasing from "../../icons/money-increase.svg";
+import decreasing from "../../icons/money-decrease.svg";
+import Image from "next/image";
 
 export default function BotsIndex({ bots }) {
   if (!bots) {
@@ -21,8 +24,28 @@ export default function BotsIndex({ bots }) {
                     <a>
                       <div className={styles.bot}>
                         <p>{bot.name}</p>
+
                         <Beelogo sad={bot.profit < 0} i={i}></Beelogo>
-                        <p>{Math.round(bot.profit * 10000, 2) / 100}%</p>
+                        <div className={styles.percentShowWrapper}>
+                          {bot.profit >= 0 ? (
+                            <div className={styles.percentImage}>
+                              <Image
+                                src={increasing}
+                                width={"20px"}
+                                alt={"increasing"}
+                              />
+                            </div>
+                          ) : (
+                            <div className={styles.percentImage}>
+                              <Image
+                                src={decreasing}
+                                width={"20px"}
+                                alt={"decreasing"}
+                              />
+                            </div>
+                          )}
+                          <p>{Math.round(bot.profit * 10000, 2) / 100}%</p>
+                        </div>
                       </div>
                     </a>
                   </Link>
@@ -46,7 +69,7 @@ export async function getStaticProps() {
     return {
       notFound: true,
     };
-  };
+  }
 
   return {
     props: { bots: data },

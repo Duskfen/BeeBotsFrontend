@@ -9,7 +9,7 @@ export default function Home() {
          <meta name="description" content="Beebots are automated trading Algorithms" />
          <link rel="icon" href="/favicon.ico" />
          </Head>
-         <p>not implemented</p>
+         <p>Note: / gets redirected to /bots, you should not see this page</p>
       </>
   )
 }

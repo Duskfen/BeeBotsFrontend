@@ -10,3 +10,11 @@
    justify-content: center;
    flex-wrap: wrap;
 }
+.percentShowWrapper{
+   display: flex;
+   align-items: center;
+
+   .percentImage{
+      padding-right: 10px;
+   }
+}
