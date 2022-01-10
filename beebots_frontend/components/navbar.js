@@ -9,7 +9,7 @@ import useMediaQuery from "../utils/useMediaQuery";
 const menu = [
   { title: "Home", path: "/bot" },
   { title: "Styleguide", path: "/styleguide" },
-  { title: "Credits", path: "/credits" },
+  { title: "Sonstiges", path: "/credits" }
 ];
 
 export default function Navbar({ children }) {
@@ -57,6 +57,7 @@ export default function Navbar({ children }) {
       ) : (
         <>
           {children}
+          {/* TODO: Bottom is not really on the bottom if content is to small */}
           <div className={styles.bottomsticky}>
             <Box className={styles.navbox}>
               <nav>
