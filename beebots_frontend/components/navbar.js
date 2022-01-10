@@ -20,7 +20,7 @@ export default function Navbar({ children }) {
     <>
       {isDesktop ? (
         <>
-          <div className={styles.stickybottom}>
+          <div className={styles.sticky}>
             <Box className={styles.navbox}>
               <nav>
                 <div className={LayoutStyles.restrict}>
