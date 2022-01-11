@@ -9,7 +9,7 @@ import useMediaQuery from "../utils/useMediaQuery";
 const menu = [
   { title: "Home", path: "/bot" },
   { title: "Styleguide", path: "/styleguide" },
-  { title: "Sonstiges", path: "/credits" }
+  { title: "Misc", path: "/credits" },
 ];
 
 export default function Navbar({ children }) {
@@ -17,7 +17,7 @@ export default function Navbar({ children }) {
   const isDesktop = useMediaQuery("(min-width: 600px)");
 
   return (
-    <>
+    <div className={styles.navcontainer}>
       {isDesktop ? (
         <>
           <div className={styles.sticky}>
@@ -56,8 +56,7 @@ export default function Navbar({ children }) {
         </>
       ) : (
         <>
-          {children}
-          {/* TODO: Bottom is not really on the bottom if content is to small */}
+          <div className={styles.maincontentwrapper}>{children}</div>
           <div className={styles.bottomsticky}>
             <Box className={styles.navbox}>
               <nav>
@@ -89,6 +88,6 @@ export default function Navbar({ children }) {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
