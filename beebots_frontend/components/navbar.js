@@ -9,7 +9,7 @@ import useMediaQuery from "../utils/useMediaQuery";
 const menu = [
   { title: "Home", path: "/bot" },
   { title: "Styleguide", path: "/styleguide" },
-  { title: "Legal", path: "/credits" },
+  { title: "Legal notice", path: "/legal" },
 ];
 
 export default function Navbar({ children }) {

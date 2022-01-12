@@ -1,6 +1,6 @@
 import React from "react";
 
-function privacypolicy() {
+function Privacypolicy() {
   return (
     <ol>
       <p>
@@ -26,7 +26,7 @@ function privacypolicy() {
         <h3>Information about us as controllers of your data</h3>
         <p>
           The party responsible for this website (the "controller") for purposes
-          of data protection law is: Gbriel Lugmayr; 3925 Arbesbach Arbesbach
+          of data protection law is: Gabriel Lugmayr; 3925 Arbesbach Arbesbach
           60, Austria; 0677 62054831; Gabriel@waldvierteblick.at
         </p>
       </li>
@@ -38,30 +38,40 @@ function privacypolicy() {
         </p>
         <ul>
           <li>
-            to confirmation of whether data concerning them is being processed,
-            information about the data being processed, further information
-            about the nature of the data processing, and copies of the data (cf.
-            also Art. 15 GDPR);
+            <p>
+              to confirmation of whether data concerning them is being
+              processed, information about the data being processed, further
+              information about the nature of the data processing, and copies of
+              the data (cf. also Art. 15 GDPR);
+            </p>
           </li>
           <li>
-            to correct or complete incorrect or incomplete data (cf. also Art.
-            16 GDPR);
+            <p>
+              to correct or complete incorrect or incomplete data (cf. also Art.
+              16 GDPR);
+            </p>
           </li>
           <li>
-            to the immediate deletion of data concerning them (cf. also Art. 17
-            DSGVO), or, alternatively, if further processing is necessary as
-            stipulated in Art. 17 Para. 3 GDPR, to restrict said processing per
-            Art. 18 GDPR;
+            <p>
+              to the immediate deletion of data concerning them (cf. also Art.
+              17 DSGVO), or, alternatively, if further processing is necessary
+              as stipulated in Art. 17 Para. 3 GDPR, to restrict said processing
+              per Art. 18 GDPR;
+            </p>
           </li>
           <li>
-            to receive copies of the data concerning them and/or provided by
-            them and to have the same transmitted to other providers/controllers
-            (cf. also Art. 20 GDPR);
+            <p>
+              to receive copies of the data concerning them and/or provided by
+              them and to have the same transmitted to other
+              providers/controllers (cf. also Art. 20 GDPR);
+            </p>
           </li>
           <li>
-            to file complaints with the supervisory authority if they believe
-            that data concerning them is being processed by the controller in
-            breach of data protection provisions (see also Art. 77 GDPR).
+            <p>
+              to file complaints with the supervisory authority if they believe
+              that data concerning them is being processed by the controller in
+              breach of data protection provisions (see also Art. 77 GDPR).
+            </p>
           </li>
         </ul>
         <p>
@@ -203,11 +213,31 @@ function privacypolicy() {
           revoking your consent. The data previously collected will then be
           deleted as soon as processing is no longer necessary. However, we must
           observe any retention periods required under tax and commercial law.
-          <a target={"_blank"} href="https://www.ratgeberrecht.eu/leistungen/muster-datenschutzerklaerung.html">Model Data Protection Statement</a> from <a target={"_blank"} href="https://www.ratgeberrecht.eu/datenschutz/datenschutzerklaerung-generator-dsgvo.html">Anwaltskanzlei Weiß & Partner</a>
-        </p>
+          </p>
+          <p>
+            The products and services of Beebots not directed to people under
+            the age of 18 years. Only persons of legal age are permitted to use
+            the services of Beebots and register for an account. Therefore, we
+            are not knowingly collecting personal data from minors.
+          </p>
+          <p>
+            <a
+              target={"_blank"}
+              href="https://www.ratgeberrecht.eu/leistungen/muster-datenschutzerklaerung.html"
+            >
+              Model Data Protection Statement
+            </a>{" "}
+            from{" "}
+            <a
+              target={"_blank"}
+              href="https://www.ratgeberrecht.eu/datenschutz/datenschutzerklaerung-generator-dsgvo.html"
+            >
+              Anwaltskanzlei Weiß & Partner
+            </a>
+          </p>
+        
       </li>
     </ol>
   );
 }
-//TODO import privacy policy
-export default privacypolicy;
+export default Privacypolicy;
