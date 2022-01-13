@@ -1,5 +1,5 @@
 .box{
-   background-color: rgba(255, 255, 255, 0.9);
+   background-color: rgba(255, 255, 255, 1);
    min-width: 100px;
    min-height: 100px;
    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
@@ -7,10 +7,11 @@
    margin: var(--def_margin);
 }
 
-@supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
-   .box {
-     background-color: rgba(255, 255, 255, 0.1);
-     -webkit-backdrop-filter: blur(8px);
-     backdrop-filter: blur(8px);
-   }
- }
+//sadly inperformant
+// @supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+//    .box {
+//      background-color: rgba(255, 255, 255, 0.1);
+//      -webkit-backdrop-filter: blur(8px);
+//      backdrop-filter: blur(8px);
+//    }
+//  }

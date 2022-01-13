@@ -226,9 +226,9 @@ function Privacypolicy() {
               href="https://www.ratgeberrecht.eu/leistungen/muster-datenschutzerklaerung.html"
               rel="noreferrer"
             >
-              Model Data Protection Statement
+              Model Data Protection Statement 
             </a>
-            from
+            {" "}from{" "} 
             <a
               target={"_blank"}
               href="https://www.ratgeberrecht.eu/datenschutz/datenschutzerklaerung-generator-dsgvo.html"
