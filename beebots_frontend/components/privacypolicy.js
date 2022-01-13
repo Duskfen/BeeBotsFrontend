@@ -4,12 +4,12 @@ function Privacypolicy() {
   return (
     <ol>
       <p>
-        Personal data (usually referred to just as "data" below) will only be
+        Personal data (usually referred to just as &quot;data&quot; below) will only be
         processed by us to the extent necessary and for the purpose of providing
         a functional and user-friendly website, including its contents, and the
         services offered there. Per Art. 4 No. 1 of Regulation (EU) 2016/679,
         i.e. the General Data Protection Regulation (hereinafter referred to as
-        the "GDPR"), "processing" refers to any operation or set of operations
+        the &quot;GDPR&quot;), &quot;processing&quot; refers to any operation or set of operations
         such as collection, recording, organization, structuring, storage,
         adaptation, alteration, retrieval, consultation, use, disclosure by
         transmission, dissemination, or otherwise making available, alignment,
@@ -25,7 +25,7 @@ function Privacypolicy() {
       <li>
         <h3>Information about us as controllers of your data</h3>
         <p>
-          The party responsible for this website (the "controller") for purposes
+          The party responsible for this website (the &quot;controller&quot;) for purposes
           of data protection law is: Gabriel Lugmayr; 3925 Arbesbach Arbesbach
           60, Austria; 0677 62054831; Gabriel@waldvierteblick.at
         </p>
@@ -84,7 +84,7 @@ function Privacypolicy() {
         </p>
         <p>
           Likewise, under Art. 21 GDPR, users and data subjects have the right
-          to object to the controller's future processing of their data pursuant
+          to object to the controller&apos;s future processing of their data pursuant
           to Art. 6 Para. 1 lit. f) GDPR. In particular, an objection to data
           processing for the purpose of direct advertising is permissible.
         </p>
@@ -224,13 +224,15 @@ function Privacypolicy() {
             <a
               target={"_blank"}
               href="https://www.ratgeberrecht.eu/leistungen/muster-datenschutzerklaerung.html"
+              rel="noreferrer"
             >
               Model Data Protection Statement
-            </a>{" "}
-            from{" "}
+            </a>
+            from
             <a
               target={"_blank"}
               href="https://www.ratgeberrecht.eu/datenschutz/datenschutzerklaerung-generator-dsgvo.html"
+              rel="noreferrer"
             >
               Anwaltskanzlei Weiß & Partner
             </a>
