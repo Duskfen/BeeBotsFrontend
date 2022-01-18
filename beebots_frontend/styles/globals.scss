@@ -1,71 +1,81 @@
-:root{
-   --neutral: #2980b9;
-   --good: hsl(145, 63%, 42%);
-   --bad: #e74c3c;
-   --warning: #f1c40f;
-   --def_padding: 10px;
-   --def_margin: 10px;
-   --def_borderRadius: 3px;
+:root {
+  --neutral: #2980b9;
+  --good: hsl(145, 63%, 42%);
+  --bad: #e74c3c;
+  --warning: #f1c40f;
+  --def_padding: 10px;
+  --def_margin: 10px;
+  --def_borderRadius: 3px;
 
-   --dotcolor:50, 49, 51;
-	--dot: radial-gradient(rgb(var(--dotcolor)) 67%, rgba(var(--dotcolor), 0) 68%);
+  --dotcolor: 50, 49, 51;
+  --dot: radial-gradient(
+    rgb(var(--dotcolor)) 67%,
+    rgba(var(--dotcolor), 0) 68%
+  );
 }
 
 @keyframes fadein {
-   from {opacity:0;}
-   to {opaciy:1;}
+  from {
+    opacity: 0;
+  }
+  to {
+    opaciy: 1;
+  }
 }
 
-
 @font-face {
-   font-family: MerriweatherSans;
-   src: url('fonts/MerriweatherSans-VariableFont_wght.ttf');
+  font-family: MerriweatherSans;
+  src: url("fonts/MerriweatherSans-VariableFont_wght.ttf");
 }
 @font-face {
-   font-family: Imprima;
-   src: url('fonts/Imprima-Regular.ttf');
+  font-family: Imprima;
+  src: url("fonts/Imprima-Regular.ttf");
 }
 @font-face {
-   font-family: Cambay;
-   src: url('fonts/Cambay-Regular.ttf');
+  font-family: Cambay;
+  src: url("fonts/Cambay-Regular.ttf");
 }
 html,
 body {
   padding: 0;
   margin: 0;
-  background-color: #fff;;
+  background-color: #fff;
 }
 
-h1{
-   font-family: MerriweatherSans;
-   font-size: 3.7em;
-   font-weight: 700;
-   color: #111;
+h1 {
+  font-family: MerriweatherSans;
+  font-size: 3.7em;
+  font-weight: 700;
+  color: #111;
 }
-h2{
-   font-family: MerriweatherSans;
-   font-size: 2em;
-   color: #111; 
+h2 {
+  font-family: MerriweatherSans;
+  font-size: 2em;
+  color: #111;
 }
-h3{
-   font-family: MerriweatherSans;
-   font-size: 1em;
-   color: #111; 
+h3 {
+  font-family: MerriweatherSans;
+  font-size: 1em;
+  color: #111;
 }
 
-p,a, button{
-   font-family: Cambay;
-   font-size: 1.1em;
-   color: #444;
-   margin: 0;
+p,
+a,
+button,
+span,
+select {
+  font-family: Cambay;
+  font-size: 1.1em;
+  color: #444;
+  margin: 0;
 }
 
 a {
   color: var(--neutral);
   text-decoration: none;
 }
-a:hover{
-   text-decoration: underline;
+a:hover {
+  text-decoration: underline;
 }
 
 * {
@@ -73,6 +83,6 @@ a:hover{
   transition: 0.1s;
 }
 
-.clickable{
-   cursor:pointer;
+.clickable {
+  cursor: pointer;
 }

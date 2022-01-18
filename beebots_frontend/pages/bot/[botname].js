@@ -31,12 +31,12 @@ function delay(milliseconds) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps({ params }) {
-  const body = {
-    id: params.botname,
-    duration: 1
-  }
-  
-  const data = {name: "testdata"}
+
+  const res = await fetch(
+      "https://beebotsbackend.azurewebsites.net/api/statisticsDuration", {body: JSON.stringify({"botId":params.botname, "duration":1}), method: "POST"}
+   );
+ const data = await res.json();
+ console.log(data);
 
   return {
     props: {
@@ -46,8 +46,8 @@ export async function getStaticProps({ params }) {
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
-    // - At most once every 3 seconds
-    revalidate: 3, // In seconds
+    // - At most once every 5 seconds
+    revalidate: 5, // In seconds
   };
 }
 
@@ -60,11 +60,6 @@ export async function getStaticPaths() {
     "https://beebotsbackend.azurewebsites.net/api/overview"
   );
   const data = await res.json();
-
-  // Get the paths we want to pre-render based on posts
-  //const paths = posts.map((post) => ({
-  //  params: { id: post.id },
-  //}))
 
   const paths = data.map((bot) => ({
     params: { botname: bot.name },
