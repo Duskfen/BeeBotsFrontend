@@ -1,14 +1,29 @@
+.BoxWrapper{
+   min-width: 300px;
+   min-height: 300px;
+   display: inline-block;
+}
 .wrapper{
    display: flex;
    justify-content: space-between;
-   min-width: 200px;
-   min-height: 200px;
-
+   border-bottom: 1px solid black;
+   margin-bottom: 10px;
    select{
       width: 60px;
       background-color: initial;
       border: none;
       text-align: right;
+      padding: 0;
+
+      option{
+         background-color: white;
+         margin:0;
+
+         :hover{
+            background-color: red;
+         }
+      }
+      
    }
 
    .secondTime{

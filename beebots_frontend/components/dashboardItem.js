@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Box from "./box";
 
-import styles from './dashboardItem.module.scss'
-
+import styles from "./dashboardItem.module.scss";
 
 export default function DashboardItem({
   children,
@@ -17,13 +16,13 @@ export default function DashboardItem({
 
   return (
     //maxwidth of a content = 600px ca? (for mobile optimization)
-    <Box className={className}>
+    <Box className={className + " " + styles.BoxWrapper}>
       <div className={styles.wrapper}>
         <p>{title}</p>
         <div className={styles.times}>
           {use2Times ? (
             <>
-            <select
+              <select
                 onChange={(e) => {
                   setTimeSpan2(e.target.value);
                   onTimeSpan2Change(e.target.value);
@@ -37,25 +36,25 @@ export default function DashboardItem({
             </>
           ) : null}
           <>
-              <select
-               className={styles.secondTime}
-                onChange={(e) => {
-                  setTimeSpan1(e.target.value);
-                  if(timeSpan1 > timeSpan2) {
-                     setTimeSpan2(timeSpan1);
-                     onTimeSpan2Change(timeSpan1);
-                  }
-                  onTimeSpanChange(e.target.value);
-                }}
-              >
-                <option value={1}>1d</option>
-                <option value={7}>7d</option>
-                <option value={30}>30d</option>
-              </select>
-            </>
+            <select
+              className={styles.secondTime}
+              onChange={(e) => {
+                setTimeSpan1(e.target.value);
+                if (timeSpan1 > timeSpan2) {
+                  setTimeSpan2(timeSpan1);
+                  onTimeSpan2Change(timeSpan1);
+                }
+                onTimeSpanChange(e.target.value);
+              }}
+            >
+              <option value={1}>1d</option>
+              <option value={7}>7d</option>
+              <option value={30}>30d</option>
+            </select>
+          </>
         </div>
       </div>
-      {children}
+         <div>{children}</div>
     </Box>
   );
 }
