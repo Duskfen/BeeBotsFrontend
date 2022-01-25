@@ -98,8 +98,24 @@ export async function getStaticProps({ params }) {
     `Successfully connected to database: ${db.databaseName} and collection: ${btcHistory.collectionName}`
   );
 
+  console.log(data);
   //TODO: -> read date, add 1 day, read as unixtimestamp and get corresponding value from mongo
+  
+  data.map(async (bot) => {
+      console.log(bot);
+      bot.btcProfit = await btcHistory.find({
+         timeStamp: {
+         $gte: new Date(bot.date).getTime() + 3600000*23,
+         $lt: new Date(bot.date).getTime() + 3600000*24,
+         },
+      }).toArray();
+      bot.btcProfit = 0;
+      console.log(bot);
+      return bot;
+  });
+  console.log("test", data)
 
+  
   // btcHistory.find().toArray().then(res => {
   //     console.log(res.filter((v, i) => i < 5))
   // })
