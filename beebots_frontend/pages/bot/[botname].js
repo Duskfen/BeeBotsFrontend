@@ -8,15 +8,32 @@ import * as d3 from "d3";
 export default function Bots({ details, botname, botsId, details7d }) {
   const router = useRouter();
 
-  const [botdetails, setBotdetails] = useState(details);
+  const [overviewDetails, setOverviewDetails] = useState(details);
+  const [profitDetails, setProfitDetails] = useState(details7d);
+  const [circleDetails, setCircleDetails] = useState(details);
+
+  const [profitDetailsClusterSize, setProfitDetailsClusterSize] = useState(1);
+
+  async function fetchData(duration) {
+    const res = await fetch(
+      "https://beebotsbackend.azurewebsites.net/api/details",
+      {
+        method: "POST",
+        body: JSON.stringify({ Name: botname, Duration: duration }),
+      }
+    );
+    return await res.json();
+  }
 
   useEffect(() => {
-    if (details7d) {
-      drawNormalProfitChart(details7d);
-    }
+    drawNormalProfitChart(profitDetails, profitDetailsClusterSize);
+  }, [profitDetails, profitDetailsClusterSize]);
 
-    drawTradesChart();
+  useEffect(() => {
+    drawTradesChart(circleDetails);
+  }, [circleDetails]);
 
+  useEffect(() => {
     return () => {
       console.log("Component onUnmount");
     };
@@ -30,7 +47,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
     );
   }
 
-  function drawTradesChart() {
+  function drawTradesChart(botdetails) {
     // set the dimensions and margins of the graph
     const width = 450,
       height = 450,
@@ -49,15 +66,17 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .append("g")
       .attr("transform", `translate(${width / 2},${height / 2})`);
 
-      console.log(botdetails)
-
     let data = botdetails.map((d) => {
       return {
-        success:  d.countCorrect+1,
-        fail:  d.countWrong+1,
-        even:  d.countBreakEven+1,
+        success: d.countCorrect,
+        fail: d.countWrong,
+        //  even:  d.countBreakEven,
       };
     }); //success: 3, fail: 1, even:1
+
+    if (data.length === 0) {
+      return;
+    }
 
     data = data.reduce((a, b) => {
       return {
@@ -67,13 +86,14 @@ export default function Bots({ details, botname, botsId, details7d }) {
       };
     });
 
-
     console.log(data);
 
     const color = d3
       .scaleOrdinal()
-      .domain(["success", "fail", "even"])
-      .range(["#27ae60", "#e74c3c", "#f1c40f"]);
+      .domain(["success", "fail"])
+      .range(["#27ae60", "#e74c3c"]);
+    // .domain(["success", "fail", "even"])
+    // .range(["#27ae60", "#e74c3c", "#f1c40f"]);
 
     // Compute the position of each group on the pie:
     const pie = d3
@@ -101,15 +121,13 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .join("path")
       .attr("d", arc)
       .attr("fill", (d) => {
-         if(d.data[0] ==="success"){
-            return "#27ae60";
-         }
-         else if (d.data[0] ==="fail"){
-            return "#e74c3c";
-         }
-         else if (d.data[0] ==="even"){
-            return "#f1c40f";
-         }
+        if (d.data[0] === "success") {
+          return "#27ae60";
+        } else if (d.data[0] === "fail") {
+          return "#e74c3c";
+        } else if (d.data[0] === "even") {
+          return "#f1c40f";
+        }
       })
       .attr("stroke", "white")
       .style("stroke-width", "2px")
@@ -150,11 +168,31 @@ export default function Bots({ details, botname, botsId, details7d }) {
       });
   }
 
-  function drawNormalProfitChart(data) {
+  function drawNormalProfitChart(data, clustersize) {
     // set the dimensions and margins of the graph
     const margin = { top: 30, right: 30, bottom: 70, left: 60 },
       width = 460 - margin.left - margin.right,
       height = 400 - margin.top - margin.bottom;
+
+    // edit data to match cluster size
+
+    //data.totalProfit -> data.totalProfit+1
+    console.log(data);
+
+    let newdata = [];
+    for (let i = 0; i < data.length; i++) {
+      if (i % clustersize === 0) {
+        newdata.push(data[i]);
+      } else {
+        newdata[newdata.length - 1].totalProfit =
+          (1 + newdata[newdata.length - 1].totalProfit) *
+          (1 + data[i].totalProfit);
+      }
+    }
+
+    console.log(newdata);
+    data = newdata;
+    //TODO fix error
 
     // append the svg object to the body of the page
     d3.select("#myNormalProfitChart").selectAll("*").remove();
@@ -237,6 +275,8 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .on("mouseleave", mouseleave);
   }
 
+  console.log(overviewDetails);
+
   return (
     //  <>
     //    <p>botname: {botname}</p>
@@ -247,38 +287,30 @@ export default function Bots({ details, botname, botsId, details7d }) {
       <div className={styles.itemWrapper}>
         <DashboardItem
           title={"General"}
-          onTimeSpanChange={(e) => console.log("timespan", e)}
+          onTimeSpanChange={async (e) =>
+            setOverviewDetails(await fetchData(+e))
+          }
           use2Times={false}
         >
           <div className={styles.GeneralBoxRow}>
             <p>Profit:</p>
-            <p>{botdetails[0]?.totalProfit * 10}%</p>
+            <p>{overviewDetails[0]?.totalProfit * 100}%</p>
           </div>
 
           <div className={styles.GeneralBoxRow}>
             <p>Trades:</p>
             <p>
-              {botdetails[0]?.countWrong +
-                botdetails[0]?.countCorrect +
-                botdetails[0]?.countBreakEven}
+              {overviewDetails[0]?.countWrong +
+                overviewDetails[0]?.countCorrect +
+                overviewDetails[0]?.countBreakEven}
             </p>
-          </div>
-
-          <div className={styles.GeneralBoxRow}>
-            <p>Bitcoinprofit:</p>
-            <p>TODO</p>
-          </div>
-
-          <div className={styles.GeneralBoxRow}>
-            <p>Profit/Bitcoin:</p>
-            <p>TODO</p>
           </div>
         </DashboardItem>
 
         <DashboardItem
           title={"General"}
-          onTimeSpanChange={(e) => console.log("timespan", e)}
-          onTimeSpan2Change={(e) => console.log("timespan", e)}
+          onTimeSpanChange={(e) => setProfitDetailsClusterSize(+e)} //days of data
+          onTimeSpan2Change={async (e) => setProfitDetails(await fetchData(+e))} //days of data
           use2Times={true}
         >
           <div id="myNormalProfitChart"></div>
@@ -286,7 +318,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
 
         <DashboardItem
           title={"Trades"}
-          onTimeSpanChange={(e) => console.log("timespan", e)}
+          onTimeSpanChange={async (e) => setCircleDetails(await fetchData(+e))}
         >
           <div id="myTradesChart"></div>
         </DashboardItem>
