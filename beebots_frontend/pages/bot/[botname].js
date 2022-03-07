@@ -86,8 +86,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
       };
     });
 
-    console.log(data);
-
     const color = d3
       .scaleOrdinal()
       .domain(["success", "fail"])
@@ -176,23 +174,18 @@ export default function Bots({ details, botname, botsId, details7d }) {
 
     // edit data to match cluster size
 
-    //data.totalProfit -> data.totalProfit+1
-    console.log(data);
-
     let newdata = [];
     for (let i = 0; i < data.length; i++) {
       if (i % clustersize === 0) {
-        newdata.push(data[i]);
+        newdata.push({ totalProfit: data[i].totalProfit, date: data[i].date });
       } else {
         newdata[newdata.length - 1].totalProfit =
           (1 + newdata[newdata.length - 1].totalProfit) *
           (1 + data[i].totalProfit);
       }
     }
-
-    console.log(newdata);
+    newdata.push({ totalProfit: -3, date: "test" });
     data = newdata;
-    //TODO fix error
 
     // append the svg object to the body of the page
     d3.select("#myNormalProfitChart").selectAll("*").remove();
@@ -210,19 +203,20 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .range([0, width])
       .domain(data.map((d) => d.date))
       .padding(0.2);
+
+    const y = d3
+      .scaleLinear()
+      .domain(d3.extent(data.map((d) => d.totalProfit)))
+      .range([height, 0]);
+
     svg
       .append("g")
-      .attr("transform", `translate(0, ${height})`)
+      .attr("transform", `translate(0, ${y(0)})`)
       .call(d3.axisBottom(x))
       .selectAll("text")
       .attr("transform", "translate(-10,0)rotate(-45)")
       .style("text-anchor", "end");
 
-    // Add Y axis
-    const y = d3
-      .scaleLinear()
-      .domain(d3.extent(data.map((d) => d.totalProfit)))
-      .range([height, 0]);
     svg.append("g").call(d3.axisLeft(y));
 
     // ----------------
@@ -259,9 +253,9 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .data(data)
       .join("rect")
       .attr("x", (d) => x(d.date))
-      .attr("y", (d) => y(d.totalProfit * 100))
+      .attr("y", (d) => y(d.totalProfit) )
       .attr("width", x.bandwidth())
-      .attr("height", (d) => height - y(d.totalProfit))
+      .attr("height", (d) => height - y(d.totalProfit)) //TODO des passt nu ned
       .attr("fill", (d) => {
         if (d.totalProfit > 0) {
           return "#27ae60";
@@ -274,8 +268,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
   }
-
-  console.log(overviewDetails);
 
   return (
     //  <>
@@ -349,40 +341,6 @@ export async function getStaticProps({ params }) {
     }
   );
   let data7d = await res7d.json();
-
-  /*
-  let db;
-  let btcHistory = null;
-
-  let connectionString =
-    "mongodb://beebotsmarkethistory:lvgyuk1K0Efc0VvDoPDk5ZvRS0YzykffvY35DoEfAeqM8zv7Klto9YRl5lbAdtKhuBaJpRXl1OoZHssX4UrnyA%3D%3D@beebotsmarkethistory.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@beebotsmarkethistory@";
-  const client = new mongoDB.MongoClient(connectionString);
-  await client.connect();
-
-  db = client.db("MarketHistory");
-  btcHistory = db.collection("BitcoinHistory");
-
-  console.log(
-    `Successfully connected to database: ${db.databaseName} and collection: ${btcHistory.collectionName}`
-  );
-
-  data = await Promise.all(await data.map(async (bot) => {
-      let btcarray = await btcHistory.find({
-        // timeStamp: {
-        // $gte: new Date(bot.date).getTime() + 3600000*23,
-        // $lt: new Date(bot.date).getTime() + 3600000*24,
-        // },
-      }).sort({timestamp:-1}).toArray();
-      if(btcarray.length > 1){
-         bot.btcProfit = (btcarray[btcarray.length-1].price/btcarray[0].price)-1; //0 -> most recent
-         console.log(bot.btcProfit);
-         console.log(btcarray[btcarray.length-1])
-         console.log(btcarray[0]);
-      }
-      else bot.btcProfit = -404;
-      return bot;
-  }));
-  console.log("test", data)*/
 
   return {
     props: {
