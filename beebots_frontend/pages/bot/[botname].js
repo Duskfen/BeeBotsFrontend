@@ -13,6 +13,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
   const [circleDetails, setCircleDetails] = useState(details);
 
   const [profitDetailsClusterSize, setProfitDetailsClusterSize] = useState(1);
+  const [countDataRows, setCountDataRows] = useState(7);
 
   async function fetchData(duration) {
     const res = await fetch(
@@ -26,8 +27,8 @@ export default function Bots({ details, botname, botsId, details7d }) {
   }
 
   useEffect(() => {
-    drawNormalProfitChart(profitDetails, profitDetailsClusterSize);
-  }, [profitDetails, profitDetailsClusterSize]);
+    drawNormalProfitChart(profitDetails, profitDetailsClusterSize, countDataRows );
+  }, [profitDetails, profitDetailsClusterSize, countDataRows]);
 
   useEffect(() => {
     drawTradesChart(circleDetails);
@@ -82,14 +83,14 @@ export default function Bots({ details, botname, botsId, details7d }) {
       return {
         success: a.success + b.success,
         fail: a.fail + b.fail,
-        even: a.even + b.even,
+       // even: a.even + b.even,
       };
     });
 
     const color = d3
       .scaleOrdinal()
       .domain(["success", "fail"])
-      .range(["#27ae60", "#e74c3c"]);
+      .range(["var(--good)", "var(--bad)"]);
     // .domain(["success", "fail", "even"])
     // .range(["#27ae60", "#e74c3c", "#f1c40f"]);
 
@@ -120,16 +121,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .attr("d", arc)
       .attr("fill", (d) => {
         if (d.data[0] === "success") {
-          return "#27ae60";
+          return "var(--good)";
         } else if (d.data[0] === "fail") {
-          return "#e74c3c";
+          return "var(--bad)";
         } else if (d.data[0] === "even") {
-          return "#f1c40f";
+          return "var(--warning)";
         }
       })
       .attr("stroke", "white")
       .style("stroke-width", "2px")
-      .style("opacity", 0.7);
 
     // Add the polylines between chart and labels:
     svg
@@ -166,26 +166,39 @@ export default function Bots({ details, botname, botsId, details7d }) {
       });
   }
 
-  function drawNormalProfitChart(data, clustersize) {
+  function drawNormalProfitChart(data, clustersize, datarows) {
+
     // set the dimensions and margins of the graph
     const margin = { top: 30, right: 30, bottom: 70, left: 60 },
       width = 460 - margin.left - margin.right,
       height = 400 - margin.top - margin.bottom;
 
-    // edit data to match cluster size
-
     let newdata = [];
     for (let i = 0; i < data.length; i++) {
       if (i % clustersize === 0) {
-        newdata.push({ totalProfit: data[i].totalProfit, date: data[i].date });
+        newdata.push({ totalProfit: data[i].totalProfit, date: new Date(data[i].date).toLocaleDateString() });
       } else {
         newdata[newdata.length - 1].totalProfit =
           (1 + newdata[newdata.length - 1].totalProfit) *
           (1 + data[i].totalProfit);
       }
     }
-    newdata.push({ totalProfit: -3, date: "test" });
-    data = newdata;
+
+    console.log(newdata);
+    let lastdate = new Date(data[data.length - 1].date);
+    for(let i = newdata.length-1; i < datarows; i++){
+      lastdate.setDate(lastdate.getDate() - 1);
+
+      if (i % clustersize === 0) {
+         newdata.push({ totalProfit: 0, date: lastdate.toLocaleDateString() });
+       }
+       else {
+         newdata[newdata.length - 1].totalProfit =
+           (1 + newdata[newdata.length - 1].totalProfit) *
+           (1);
+       }
+    }
+    data = newdata.reverse();
 
     // append the svg object to the body of the page
     d3.select("#myNormalProfitChart").selectAll("*").remove();
@@ -208,16 +221,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .scaleLinear()
       .domain(d3.extent(data.map((d) => d.totalProfit)))
       .range([height, 0]);
-
-    svg
-      .append("g")
-      .attr("transform", `translate(0, ${y(0)})`)
-      .call(d3.axisBottom(x))
-      .selectAll("text")
-      .attr("transform", "translate(-10,0)rotate(-45)")
-      .style("text-anchor", "end");
-
-    svg.append("g").call(d3.axisLeft(y));
 
     // ----------------
     // Create a tooltip
@@ -253,9 +256,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .data(data)
       .join("rect")
       .attr("x", (d) => x(d.date))
-      .attr("y", (d) => y(d.totalProfit) )
+      .attr("y", (d) => { 
+         if(d.totalProfit > 0) return y(d.totalProfit);
+         else return y(0);
+      })
       .attr("width", x.bandwidth())
-      .attr("height", (d) => height - y(d.totalProfit)) //TODO des passt nu ned
+      .attr("height", (d) => {
+         if(d.totalProfit > 0) return y(0) - y(d.totalProfit);
+         else return y(d.totalProfit) - y(0);      
+      }) 
       .attr("fill", (d) => {
         if (d.totalProfit > 0) {
           return "#27ae60";
@@ -267,6 +276,17 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
+
+      
+    svg
+    .append("g")
+    .attr("transform", `translate(0, ${y(0)})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("transform", "translate(-10,0)rotate(-45)")
+    .style("text-anchor", "end");
+
+  svg.append("g").call(d3.axisLeft(y));
   }
 
   return (
@@ -300,9 +320,9 @@ export default function Bots({ details, botname, botsId, details7d }) {
         </DashboardItem>
 
         <DashboardItem
-          title={"General"}
+          title={""}
           onTimeSpanChange={(e) => setProfitDetailsClusterSize(+e)} //days of data
-          onTimeSpan2Change={async (e) => setProfitDetails(await fetchData(+e))} //days of data
+          onTimeSpan2Change={async (e) => {setProfitDetails(await fetchData(+e)); setCountDataRows(+e) }} //days of data
           use2Times={true}
         >
           <div id="myNormalProfitChart"></div>
