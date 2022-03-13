@@ -9,6 +9,7 @@ export default function DashboardItem({
   use2Times = false,
   onTimeSpanChange = () => {},
   onTimeSpan2Change = () => {},
+  availableTimeSpans = [1, 7, 30],
   className,
 }) {
   const [timeSpan1, setTimeSpan1] = useState(1);
@@ -47,9 +48,12 @@ export default function DashboardItem({
                 onTimeSpanChange(e.target.value);
               }}
             >
-              <option value={1}>1d</option>
-              <option value={7}>7d</option>
-              <option value={30}>30d</option>
+              {
+                availableTimeSpans.map((timeSpan) => (
+                  <option key={timeSpan} value={timeSpan}>{timeSpan}d</option>
+                ))
+              }
+
             </select>
           </>
         </div>

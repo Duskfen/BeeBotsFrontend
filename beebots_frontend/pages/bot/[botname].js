@@ -87,6 +87,12 @@ export default function Bots({ details, botname, botsId, details7d }) {
       };
     });
 
+    if(data.success == 0 && data.fail == 0) {
+      d3.select("#myTradesChart").selectAll("*").remove();;
+      d3.select("#myTradesChart").append("p").text("No successfull or failed trades in this timespan");
+      return;
+    }
+
     const color = d3
       .scaleOrdinal()
       .domain(["success", "fail"])
@@ -184,7 +190,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
       }
     }
 
-    console.log(newdata);
     let lastdate = new Date(data[data.length - 1].date);
     for(let i = newdata.length-1; i < datarows; i++){
       lastdate.setDate(lastdate.getDate() - 1);
@@ -239,13 +244,8 @@ export default function Bots({ details, botname, botsId, details7d }) {
     // Three function that change the tooltip when user hover / move / leave a cell
     var mouseover = function (event, d) {
       tooltip
-        .html("<p>Value: " + d.totalProfit * 100 + "%</p>")
+        .html("<p>Profit: " + d.totalProfit * 100 + "%</p><p>Date: " + d.date + "</p>")
         .style("opacity", 1);
-    };
-    var mousemove = function (d) {
-      tooltip
-        .style("left", d3.pointer(this)[0] + 90 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-        .style("top", d3.pointer(this)[1] + "px");
     };
     var mouseleave = function (d) {
       tooltip.style("opacity", 0);
@@ -274,7 +274,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
         } else return "#f1c40f";
       })
       .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
 
       
@@ -287,6 +286,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
     .style("text-anchor", "end");
 
   svg.append("g").call(d3.axisLeft(y));
+  }
+
+  let overViewExtracted = {countCorrect: 0, countWrong: 0, countBreakEven:0, totalProfit: 0}
+  for(let i of overviewDetails.reverse()){
+    console.log(overViewExtracted.totalProfit)
+    overViewExtracted.totalProfit = (1+overViewExtracted.totalProfit)*(1+i.totalProfit)-1
+    overViewExtracted.countCorrect += i.countCorrect + overViewExtracted.countCorrect;
+    overViewExtracted.countWrong += i.countWrong
+    overViewExtracted.countBreakEven += i.countBreakEven;
   }
 
   return (
@@ -306,24 +314,27 @@ export default function Bots({ details, botname, botsId, details7d }) {
         >
           <div className={styles.GeneralBoxRow}>
             <p>Profit:</p>
-            <p>{overviewDetails[0]?.totalProfit * 100}%</p>
+            <p>{overViewExtracted.totalProfit * 100}%</p>
           </div>
 
           <div className={styles.GeneralBoxRow}>
             <p>Trades:</p>
             <p>
-              {overviewDetails[0]?.countWrong +
-                overviewDetails[0]?.countCorrect +
-                overviewDetails[0]?.countBreakEven}
+              {overViewExtracted.countWrong +
+                overViewExtracted.countCorrect +
+                overViewExtracted.countBreakEven}
             </p>
           </div>
         </DashboardItem>
 
         <DashboardItem
-          title={""}
-          onTimeSpanChange={(e) => setProfitDetailsClusterSize(+e)} //days of data
-          onTimeSpan2Change={async (e) => {setProfitDetails(await fetchData(+e)); setCountDataRows(+e) }} //days of data
-          use2Times={true}
+          title={"Profit"}
+          onTimeSpanChange={async (e) => {setProfitDetails(await fetchData(+e)); setCountDataRows(+e) }} //days of data
+          use2Times={false}
+          availableTimeSpans={[7, 30, 90]}
+          // onTimeSpanChange={(e) => setProfitDetailsClusterSize(+e)} //days of data
+          // onTimeSpan2Change={async (e) => {setProfitDetails(await fetchData(+e)); setCountDataRows(+e) }} //days of data
+          // use2Times={true}
         >
           <div id="myNormalProfitChart"></div>
         </DashboardItem>
