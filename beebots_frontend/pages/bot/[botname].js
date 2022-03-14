@@ -292,7 +292,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
   for(let i of overviewDetails.reverse()){
     console.log(overViewExtracted.totalProfit)
     overViewExtracted.totalProfit = (1+overViewExtracted.totalProfit)*(1+i.totalProfit)-1
-    overViewExtracted.countCorrect += i.countCorrect + overViewExtracted.countCorrect;
+    overViewExtracted.countCorrect += i.countCorrect
     overViewExtracted.countWrong += i.countWrong
     overViewExtracted.countBreakEven += i.countBreakEven;
   }
