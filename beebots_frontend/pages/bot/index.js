@@ -65,6 +65,8 @@ export async function getStaticProps() {
   );
   const data = await res.json();
 
+  console.log(data);
+
   if (!data) {
     return {
       notFound: true,

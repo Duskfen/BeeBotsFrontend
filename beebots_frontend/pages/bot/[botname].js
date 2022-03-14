@@ -11,6 +11,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
   const [overviewDetails, setOverviewDetails] = useState(details);
   const [profitDetails, setProfitDetails] = useState(details7d);
   const [circleDetails, setCircleDetails] = useState(details);
+  const [investmentDetails, setInvestmentDetails] = useState(details7d);
 
   const [profitDetailsClusterSize, setProfitDetailsClusterSize] = useState(1);
   const [countDataRows, setCountDataRows] = useState(7);
@@ -27,7 +28,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
   }
 
   useEffect(() => {
-    drawNormalProfitChart(profitDetails, profitDetailsClusterSize, countDataRows );
+    drawInvestedChart(investmentDetails);
+  }, [investmentDetails]);
+
+  useEffect(() => {
+    drawNormalProfitChart(
+      profitDetails,
+      profitDetailsClusterSize,
+      countDataRows
+    );
   }, [profitDetails, profitDetailsClusterSize, countDataRows]);
 
   useEffect(() => {
@@ -46,6 +55,67 @@ export default function Bots({ details, botname, botsId, details7d }) {
         <Spinner size="250px" />
       </div>
     );
+  }
+
+  function drawInvestedChart(botdetails) {
+    const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+      width = 460 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+
+      d3.select("#myInvestmentChart").selectAll("*").remove();
+
+    const svg = d3
+      .select("#myInvestmentChart")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    let gdata = [];
+    let mymoney = 100;
+    for (let i of botdetails.reverse()) {
+      gdata.push({
+        date: d3.timeParse("%Y-%m-%d %H:%M:%S")(i.date),
+        value: mymoney * (1 + i.totalProfit),
+      });
+      mymoney = mymoney * (1 + i.totalProfit);
+    }
+
+    const x = d3
+      .scaleTime()
+      .domain(
+        d3.extent(gdata, function (d) {
+          return d.date;
+        })
+      )
+      .range([0, width]);
+    svg
+      .append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
+
+    // Add Y axis
+    const y = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(gdata, function (d) {
+          return +d.value;
+        }),
+      ])
+      .range([height, 0]);
+    svg.append("g").call(d3.axisLeft(y));
+
+    svg.append("path")
+      .datum(gdata)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(d => d.date)
+        .y(d => d.value)
+        )
   }
 
   function drawTradesChart(botdetails) {
@@ -83,13 +153,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
       return {
         success: a.success + b.success,
         fail: a.fail + b.fail,
-       // even: a.even + b.even,
+        // even: a.even + b.even,
       };
     });
 
-    if(data.success == 0 && data.fail == 0) {
-      d3.select("#myTradesChart").selectAll("*").remove();;
-      d3.select("#myTradesChart").append("p").text("No successfull or failed trades in this timespan");
+    if (data.success == 0 && data.fail == 0) {
+      d3.select("#myTradesChart").selectAll("*").remove();
+      d3.select("#myTradesChart")
+        .append("p")
+        .text("No successfull or failed trades in this timespan");
       return;
     }
 
@@ -135,7 +207,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
         }
       })
       .attr("stroke", "white")
-      .style("stroke-width", "2px")
+      .style("stroke-width", "2px");
 
     // Add the polylines between chart and labels:
     svg
@@ -173,7 +245,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
   }
 
   function drawNormalProfitChart(data, clustersize, datarows) {
-
     // set the dimensions and margins of the graph
     const margin = { top: 30, right: 30, bottom: 70, left: 60 },
       width = 460 - margin.left - margin.right,
@@ -182,7 +253,10 @@ export default function Bots({ details, botname, botsId, details7d }) {
     let newdata = [];
     for (let i = 0; i < data.length; i++) {
       if (i % clustersize === 0) {
-        newdata.push({ totalProfit: data[i].totalProfit, date: new Date(data[i].date).toLocaleDateString() });
+        newdata.push({
+          totalProfit: data[i].totalProfit,
+          date: new Date(data[i].date).toLocaleDateString(),
+        });
       } else {
         newdata[newdata.length - 1].totalProfit =
           (1 + newdata[newdata.length - 1].totalProfit) *
@@ -191,17 +265,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
     }
 
     let lastdate = new Date(data[data.length - 1].date);
-    for(let i = newdata.length-1; i < datarows; i++){
+    for (let i = newdata.length - 1; i < datarows; i++) {
       lastdate.setDate(lastdate.getDate() - 1);
 
       if (i % clustersize === 0) {
-         newdata.push({ totalProfit: 0, date: lastdate.toLocaleDateString() });
-       }
-       else {
-         newdata[newdata.length - 1].totalProfit =
-           (1 + newdata[newdata.length - 1].totalProfit) *
-           (1);
-       }
+        newdata.push({ totalProfit: 0, date: lastdate.toLocaleDateString() });
+      } else {
+        newdata[newdata.length - 1].totalProfit =
+          (1 + newdata[newdata.length - 1].totalProfit) * 1;
+      }
     }
     data = newdata.reverse();
 
@@ -233,7 +305,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
     var tooltip = d3
       .select("#myNormalProfitChart")
       .append("div")
-      .style("opacity", 0)
+      .style("display", "none")
       .attr("class", "tooltip")
       .style("background-color", "white")
       .style("border", "solid")
@@ -244,11 +316,17 @@ export default function Bots({ details, botname, botsId, details7d }) {
     // Three function that change the tooltip when user hover / move / leave a cell
     var mouseover = function (event, d) {
       tooltip
-        .html("<p>Profit: " + d.totalProfit * 100 + "%</p><p>Date: " + d.date + "</p>")
-        .style("opacity", 1);
+        .html(
+          "<p>Profit: " +
+            (d.totalProfit * 100).toFixed(2) +
+            "%</p><p>Date: " +
+            d.date +
+            "</p>"
+        )
+        .style("display", "block");
     };
     var mouseleave = function (d) {
-      tooltip.style("opacity", 0);
+      tooltip.style("display", "none");
     };
 
     svg
@@ -256,15 +334,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .data(data)
       .join("rect")
       .attr("x", (d) => x(d.date))
-      .attr("y", (d) => { 
-         if(d.totalProfit > 0) return y(d.totalProfit);
-         else return y(0);
+      .attr("y", (d) => {
+        if (d.totalProfit > 0) return y(d.totalProfit);
+        else return y(0);
       })
       .attr("width", x.bandwidth())
       .attr("height", (d) => {
-         if(d.totalProfit > 0) return y(0) - y(d.totalProfit);
-         else return y(d.totalProfit) - y(0);      
-      }) 
+        if (d.totalProfit > 0) return y(0) - y(d.totalProfit);
+        else return y(d.totalProfit) - y(0);
+      })
       .attr("fill", (d) => {
         if (d.totalProfit > 0) {
           return "#27ae60";
@@ -276,24 +354,29 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
 
-      
     svg
-    .append("g")
-    .attr("transform", `translate(0, ${y(0)})`)
-    .call(d3.axisBottom(x))
-    .selectAll("text")
-    .attr("transform", "translate(-10,0)rotate(-45)")
-    .style("text-anchor", "end");
+      .append("g")
+      .attr("transform", `translate(0, ${y(0)})`)
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
 
-  svg.append("g").call(d3.axisLeft(y));
+    svg.append("g").call(d3.axisLeft(y));
   }
 
-  let overViewExtracted = {countCorrect: 0, countWrong: 0, countBreakEven:0, totalProfit: 0}
-  for(let i of overviewDetails.reverse()){
-    console.log(overViewExtracted.totalProfit)
-    overViewExtracted.totalProfit = (1+overViewExtracted.totalProfit)*(1+i.totalProfit)-1
-    overViewExtracted.countCorrect += i.countCorrect
-    overViewExtracted.countWrong += i.countWrong
+  let overViewExtracted = {
+    countCorrect: 0,
+    countWrong: 0,
+    countBreakEven: 0,
+    totalProfit: 0,
+  };
+  for (let i of overviewDetails.reverse()) {
+    console.log(overViewExtracted.totalProfit);
+    overViewExtracted.totalProfit =
+      (1 + overViewExtracted.totalProfit) * (1 + i.totalProfit) - 1;
+    overViewExtracted.countCorrect += i.countCorrect;
+    overViewExtracted.countWrong += i.countWrong;
     overViewExtracted.countBreakEven += i.countBreakEven;
   }
 
@@ -314,7 +397,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
         >
           <div className={styles.GeneralBoxRow}>
             <p>Profit:</p>
-            <p>{overViewExtracted.totalProfit * 100}%</p>
+            <p>{(overViewExtracted.totalProfit * 100).toFixed(2)}%</p>
           </div>
 
           <div className={styles.GeneralBoxRow}>
@@ -329,7 +412,10 @@ export default function Bots({ details, botname, botsId, details7d }) {
 
         <DashboardItem
           title={"Profit"}
-          onTimeSpanChange={async (e) => {setProfitDetails(await fetchData(+e)); setCountDataRows(+e) }} //days of data
+          onTimeSpanChange={async (e) => {
+            setProfitDetails(await fetchData(+e));
+            setCountDataRows(+e);
+          }} //days of data
           use2Times={false}
           availableTimeSpans={[7, 30, 90]}
           // onTimeSpanChange={(e) => setProfitDetailsClusterSize(+e)} //days of data
@@ -344,6 +430,16 @@ export default function Bots({ details, botname, botsId, details7d }) {
           onTimeSpanChange={async (e) => setCircleDetails(await fetchData(+e))}
         >
           <div id="myTradesChart"></div>
+        </DashboardItem>
+
+        <DashboardItem
+          title={"If I Invested"}
+          availableTimeSpans={[7, 30, 90]}
+          onTimeSpanChange={async (e) =>
+            setInvestmentDetails(await fetchData(+e))
+          }
+        >
+          <div id="myInvestmentChart"></div>
         </DashboardItem>
       </div>
     </>
