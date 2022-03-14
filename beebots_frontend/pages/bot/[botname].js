@@ -12,9 +12,13 @@ export default function Bots({ details, botname, botsId, details7d }) {
   const [profitDetails, setProfitDetails] = useState(details7d);
   const [circleDetails, setCircleDetails] = useState(details);
   const [investmentDetails, setInvestmentDetails] = useState(details7d);
+  const [investmentDuration, setinvestmentDuration] = useState(7);
 
   const [profitDetailsClusterSize, setProfitDetailsClusterSize] = useState(1);
   const [countDataRows, setCountDataRows] = useState(7);
+
+
+      const timeFormat = d3.timeFormat("%Y-%m-%d");
 
   async function fetchData(duration) {
     const res = await fetch(
@@ -28,8 +32,8 @@ export default function Bots({ details, botname, botsId, details7d }) {
   }
 
   useEffect(() => {
-    drawInvestedChart(investmentDetails);
-  }, [investmentDetails]);
+    drawInvestedChart(investmentDetails, investmentDuration);
+  }, [investmentDetails, investmentDuration]);
 
   useEffect(() => {
     drawNormalProfitChart(
@@ -57,12 +61,12 @@ export default function Bots({ details, botname, botsId, details7d }) {
     );
   }
 
-  function drawInvestedChart(botdetails) {
-    const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+  function drawInvestedChart(botdetails, investmentDuration) {
+    const margin = { top: 10, right: 30, bottom: 60, left: 60 },
       width = 460 - margin.left - margin.right,
       height = 400 - margin.top - margin.bottom;
 
-      d3.select("#myInvestmentChart").selectAll("*").remove();
+    d3.select("#myInvestmentChart").selectAll("*").remove();
 
     const svg = d3
       .select("#myInvestmentChart")
@@ -74,13 +78,48 @@ export default function Bots({ details, botname, botsId, details7d }) {
 
     let gdata = [];
     let mymoney = 100;
-    for (let i of botdetails.reverse()) {
+
+    console.log(investmentDuration)
+
+    let test = [...botdetails];
+
+    for (let i of test.reverse()) {
       gdata.push({
         date: d3.timeParse("%Y-%m-%d %H:%M:%S")(i.date),
         value: mymoney * (1 + i.totalProfit),
       });
       mymoney = mymoney * (1 + i.totalProfit);
     }
+
+    if(gdata.length < 1) {
+      d3.select("#myInvestmentChart").selectAll("*").remove();
+      d3.select("#myInvestmentChart")
+        .append("p")
+        .text("Not enough Data");
+      return;
+    }
+
+
+    if(new Date(botdetails[botdetails.length-1].date) > new Date(Date.now() - investmentDuration * 24 * 60 * 60 * 1000)){
+      console.log((new Date(Date.now() - investmentDuration * 24 * 60 * 60 * 1000).toLocaleDateString()))
+      gdata.unshift(
+        {
+          date: d3.isoParse(new Date(Date.now() - investmentDuration * 24 * 60 * 60 * 1000).toISOString()),
+          value: 100
+        }
+      )
+    }
+
+    if(new Date(botdetails[botdetails.length-1].date) < new Date(Date.now())){
+      gdata.push(
+        {
+          date: d3.isoParse(new Date(Date.now()).toISOString()),
+          value: mymoney
+        }
+      )
+    }
+
+
 
     const x = d3
       .scaleTime()
@@ -89,11 +128,16 @@ export default function Bots({ details, botname, botsId, details7d }) {
           return d.date;
         })
       )
-      .range([0, width]);
+      .range([0, width])
+      ;
+
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x).ticks(d3.timeDay).tickFormat(timeFormat))
+      .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
 
     // Add Y axis
     const y = d3
@@ -107,15 +151,89 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .range([height, 0]);
     svg.append("g").call(d3.axisLeft(y));
 
-    svg.append("path")
+
+    // Add the line
+    svg
+      .append("path")
       .datum(gdata)
       .attr("fill", "none")
-      .attr("stroke", "steelblue")
+      .attr("stroke", "black")
       .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
-        .x(d => d.date)
-        .y(d => d.value)
-        )
+      .attr(
+        "d", 
+        d3
+          .line()
+          .x(function (d) {
+            return x(d.date);
+          })
+          .y(function (d) {
+            return y(d.value);
+          })
+      );
+
+      var bisect = d3.bisector(function(d) { return d.date; }).left;
+
+      var selectedData = null;
+      
+
+          // Create the circle that travels along the curve of chart
+    var focus = svg
+    .append("g")
+    .append("circle")
+    .style("fill", "none")
+    .attr("stroke", "black")
+    .attr("r", 8.5)
+    .style("opacity", 0);
+
+  var focusText = 
+  d3.select("#myInvestmentChart")
+  .append("div")
+  .style("opacity", "0")
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "10px");
+//
+    // Create a rect on top of the svg area: this rectangle recovers mouse position
+    svg
+      .append("rect")
+      .style("fill", "none")
+      .style("pointer-events", "all")
+      .attr("width", width)
+      .attr("height", height)
+      .data(gdata)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseout", mouseout);
+
+    function mouseover() {
+      focus.style("opacity", 1);
+      focusText.style("opacity", 1);
+    }
+
+
+    function mousemove(e) {
+      // recover coordinate we need 
+      var x0 = x.invert(d3.pointer(e)[0]);
+      var i = bisect(gdata, x0, 1);
+      selectedData = gdata[i];
+      focus.attr("cx", x(selectedData?.date)).attr("cy", y(selectedData?.value));
+      focusText
+      .html(
+        "<p>Money: " +
+          (selectedData?.value)?.toFixed(2) +
+          "$</p><p>Date: " +
+          timeFormat(selectedData?.date) +
+          "</p>"
+      )
+      .style("opacity", "1");
+    }
+    function mouseout() {
+      focus.style("opacity", 0);
+      focusText.style("opacity", 0);
+    } 
   }
 
   function drawTradesChart(botdetails) {
@@ -146,6 +264,10 @@ export default function Bots({ details, botname, botsId, details7d }) {
     }); //success: 3, fail: 1, even:1
 
     if (data.length === 0) {
+      d3.select("#myTradesChart").selectAll("*").remove();
+      d3.select("#myTradesChart")
+        .append("p")
+        .text("No successfull or failed trades in this timespan");
       return;
     }
 
@@ -255,7 +377,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
       if (i % clustersize === 0) {
         newdata.push({
           totalProfit: data[i].totalProfit,
-          date: new Date(data[i].date).toLocaleDateString(),
+          date: timeFormat(d3.timeParse("%Y-%m-%d %H:%M:%S")(data[i].date)),
         });
       } else {
         newdata[newdata.length - 1].totalProfit =
@@ -263,13 +385,15 @@ export default function Bots({ details, botname, botsId, details7d }) {
           (1 + data[i].totalProfit);
       }
     }
-
-    let lastdate = new Date(data[data.length - 1].date);
+ 
+    let lastdate = null;
+    if(data.length < 1) lastdate = new Date(Date.now() - datarows * 24 * 60 * 60 * 1000)
+    else lastdate = new Date(data[data.length - 1].date);
     for (let i = newdata.length - 1; i < datarows; i++) {
       lastdate.setDate(lastdate.getDate() - 1);
 
       if (i % clustersize === 0) {
-        newdata.push({ totalProfit: 0, date: lastdate.toLocaleDateString() });
+        newdata.push({ totalProfit: 0, date: timeFormat(d3.isoParse(lastdate.toISOString())) });
       } else {
         newdata[newdata.length - 1].totalProfit =
           (1 + newdata[newdata.length - 1].totalProfit) * 1;
@@ -305,7 +429,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
     var tooltip = d3
       .select("#myNormalProfitChart")
       .append("div")
-      .style("display", "none")
+      .style("opacity", "0")
       .attr("class", "tooltip")
       .style("background-color", "white")
       .style("border", "solid")
@@ -323,10 +447,10 @@ export default function Bots({ details, botname, botsId, details7d }) {
             d.date +
             "</p>"
         )
-        .style("display", "block");
+        .style("opacity", "1");
     };
     var mouseleave = function (d) {
-      tooltip.style("display", "none");
+      tooltip.style("opacity", "0");
     };
 
     svg
@@ -433,10 +557,12 @@ export default function Bots({ details, botname, botsId, details7d }) {
         </DashboardItem>
 
         <DashboardItem
-          title={"If I Invested"}
+          title={"If I Invested 100$"}
           availableTimeSpans={[7, 30, 90]}
-          onTimeSpanChange={async (e) =>
-            setInvestmentDetails(await fetchData(+e))
+          onTimeSpanChange={async (e) => {
+            setInvestmentDetails(await fetchData(+e));
+            console.log("test", +e)
+            setinvestmentDuration(+e);}
           }
         >
           <div id="myInvestmentChart"></div>
