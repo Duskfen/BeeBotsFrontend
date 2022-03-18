@@ -602,6 +602,9 @@ export async function getStaticProps({ params }) {
       body: JSON.stringify({ Name: params.botname, Duration: 7 }),
     }
   );
+  
+  console.log(res7d.status)
+  
   let data7d = await res7d.json();
 
   return {
@@ -624,6 +627,19 @@ export async function getStaticPaths() {
   const res = await fetch(
     "https://beebotsbackend.azurewebsites.net/api/overview"
   );
+
+    async function fetchData(duration) {
+    const res = await fetch(
+      "https://beebotsbackend.azurewebsites.net/api/details",
+      {
+        method: "POST",
+        body: JSON.stringify({ Name: botname, Duration: duration }),
+      }
+    );
+    return await res.json();
+  }
+
+
   const data = await res.json();
 
   const paths = data.map((bot) => ({
