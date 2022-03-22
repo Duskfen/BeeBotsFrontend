@@ -2,6 +2,7 @@ import Head from "next/head";
 import Box from "../../../components/box";
 import { useRouter } from "next/router";
 import * as d3 from "d3";
+import styles from "./live.module.scss";
 import { useEffect, useState } from "react";
 import DashboardItem from "../../../components/dashboardItem";
 
@@ -17,7 +18,7 @@ export default function LivebotView() {
   useEffect(() => {
     getData();
     const getdatainterval = setInterval(() => setpollingi((i) => i+1), 10000);
-    const handleResize = () => drawInvestedChart();
+    const handleResize = () => drawInvestedChart(data);
     window.addEventListener("resize", handleResize);
 
     drawInvestedChart(data);
@@ -62,10 +63,8 @@ export default function LivebotView() {
   }
 
   function drawInvestedChart(botdetails = null) {
-    if (!botdetails) botdetails = data;
-
     const margin = { top: 60, right: 30, bottom: 100, left: 60 };
-    let width = window.innerWidth - margin.left - margin.right - 50, //1024
+    let width = window.innerWidth - margin.left - margin.right - 100, //1024
       height = window.innerHeight - margin.top - margin.bottom - 300;
 
     if (window.innerWidth > 1024) {
@@ -242,13 +241,15 @@ export default function LivebotView() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <DashboardItem
-          title={"Live Trades"}
-          onTimeSpanChange={async (e) => setdayinterval(+e)}
-          availableTimeSpans={[1, 0.3 , 7, 30]}
-        >
-      <div id="myInvestmentChart"></div>
-        </DashboardItem>
+      <div className={styles.wrapper}>
+         <DashboardItem
+            title={"Live Trades"}
+            onTimeSpanChange={async (e) => setdayinterval(+e)}
+            availableTimeSpans={[1, 0.3 , 7, 30]}
+         >
+         <div id="myInvestmentChart"></div>
+         </DashboardItem>
+      </div>
 
 
     </>
