@@ -98,11 +98,17 @@ export default function LivebotView() {
     }
 
     gdata.push({
+       date: d3.isoParse(new Date().toISOString()),
+       value:mymoney
+    })
+
+    gdata.push({
       date: d3.isoParse(
         new Date(Date.now() - dayinterval * 24 * 60 * 60 * 1000 - 1).toISOString()
       ),
       value: 1,
     });
+
 
     gdata.sort((a, b) => a.date - b.date);
 
