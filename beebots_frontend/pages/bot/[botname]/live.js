@@ -3,67 +3,21 @@ import Box from "../../../components/box";
 import { useRouter } from "next/router";
 import * as d3 from "d3";
 import { useEffect, useState } from "react";
+import DashboardItem from "../../../components/dashboardItem";
 
 export default function LivebotView() {
   const router = useRouter();
-  const test = router.query;
+  const { botname } = router.query;
   const timeFormat = d3.timeFormat("%Y-%m-%d %H:%M:%S");
 
-  const [data, setData] = useState([
-    { date: "2022-03-22 06:39:23", profit: 0.2 },
-    { date: "2022-03-22 07:40:23", profit: 0.4 },
-    { date: "2022-03-22 08:41:23", profit: -0.2 },
-    { date: "2022-03-22 09:42:23", profit: 0.11 },
-    { date: "2022-03-22 10:43:23", profit: -0.3 },
-    { date: "2022-03-22 11:44:23", profit: 0 },
-  ]);
-
-  // lakjsdfö alsdj föalsdjf öalsdjf aölsdj f
-//   const margin = { top: 60, right: 30, bottom: 60, left: 60 };
-//   let width = window.innerWidth - margin.left - margin.right-50, //1024
-//     height = window.innerHeight - margin.top - margin.bottom - 250;
-
-//   if (window.innerWidth > 1024) {
-//     width = 1024 - margin.left - margin.right-50;
-//   }
-
-  //   //x domain fehlt
-
-  //   const x = d3
-  //       .scaleTime()
-  //       .range([0, width]);
-  //     svg
-  //       .append("g")
-  //       .attr("transform", `translate(0, ${height})`)
-  //       .call(d3.axisBottom(x).ticks(d3.timeHour).tickFormat(timeFormat))
-  //       .selectAll("text")
-  //       .attr("transform", "translate(-10,0)rotate(-45)")
-  //       .style("text-anchor", "end");
-
-  //     // Add Y axis
-  //     const y = d3
-  //       .scaleLinear()
-  //       .domain([
-  //         0,
-  //         d3.max(gdata, function (d) {
-  //           return +d.value;
-  //         }),
-  //       ])
-  //       .range([height, 0]);
-  //     svg.append("g").call(d3.axisLeft(y));
-
-  //   var svg = d3
-  //     .select("#my_dataviz")
-  //     .append("svg")
-  //     .attr("width", width + margin.left + margin.right)
-  //     .attr("height", height + margin.top + margin.bottom)
-  //     .append("g")
-  //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  //   // asdjlf öalsjdf öalsjd föaljsdf ölaskjd öalksjdf
+  const [data, setData] = useState([]);
+  const [dayinterval, setdayinterval] = useState(1)
+  const [pollingi, setpollingi] = useState(0)
 
   useEffect(() => {
-    const getdatainterval = setInterval(() => getData(), 8000);
-    const handleResize = () => drawInvestedChart(data);
+    getData();
+    const getdatainterval = setInterval(() => setpollingi((i) => i+1), 10000);
+    const handleResize = () => drawInvestedChart();
     window.addEventListener("resize", handleResize);
 
     drawInvestedChart(data);
@@ -74,33 +28,51 @@ export default function LivebotView() {
   }, []);
 
   useEffect(() => {
+    getData();
+  }, [dayinterval, pollingi])
+  
+
+  useEffect(() => {
     drawInvestedChart(data);
   }, [data]);
 
-  function getData() {
-    console.log("refresh data");
+  async function getData() {
     let newData = [];
-    for (let i = 0; i < 23; i++) {
-      newData.push({
-        date: "2022-03-22 " + (i + 1) + ":39:23",
-        profit: Math.random(),
-      });
-    }
-    setData(newData);
+
+    const res = await fetch(
+      "https://beebotsbackend.azurewebsites.net/api/transactions/" + botname,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          sinceDate: new Date(Date.now() - dayinterval * 24 * 60 * 60 * 1000),
+        }),
+      }
+    );
+    newData = await res.json();
+    console.log(newData);
+    //  for (let i = 0; i < 23; i++) {
+    //    newData.push({
+    //      date: "2022-03-22 " + (i + 1) + ":39:23",
+    //      profit: Math.random(),
+    //    });
+    //  }
+    setData(
+      newData.map((d) => ({ date: d.exitTime, profit: d.percentageProfit }))
+    );
   }
 
-  function initInvestedChart() {}
+  function drawInvestedChart(botdetails = null) {
+    if (!botdetails) botdetails = data;
 
-  function drawInvestedChart(botdetails) {
-    const margin = { top: 60, right: 30, bottom: 60, left: 60 };
-    let width = window.innerWidth - margin.left - margin.right-50, //1024
-      height = window.innerHeight - margin.top - margin.bottom - 250;
+    const margin = { top: 60, right: 30, bottom: 100, left: 60 };
+    let width = window.innerWidth - margin.left - margin.right - 50, //1024
+      height = window.innerHeight - margin.top - margin.bottom - 300;
 
     if (window.innerWidth > 1024) {
-      width = 1024 - margin.left - margin.right-50;
+      width = 1024 - margin.left - margin.right - 50;
     }
 
-    d3.select("#myInvestmentChart").selectAll("*").remove();
+    d3.select("#myInvestmentChart").selectAll("*:not(path)").remove();
 
     const svg = d3
       .select("#myInvestmentChart")
@@ -120,7 +92,7 @@ export default function LivebotView() {
 
     for (let i of test) {
       gdata.push({
-        date: d3.timeParse("%Y-%m-%d %H:%M:%S")(i.date),
+        date: d3.timeParse("%Y-%m-%dT%H:%M:%S")(i.date),
         value: mymoney * (1 + i.profit),
       });
       mymoney = mymoney * (1 + i.profit);
@@ -128,7 +100,7 @@ export default function LivebotView() {
 
     gdata.push({
       date: d3.isoParse(
-        new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 - 1).toISOString()
+        new Date(Date.now() - dayinterval * 24 * 60 * 60 * 1000 - 1).toISOString()
       ),
       value: 1,
     });
@@ -152,7 +124,7 @@ export default function LivebotView() {
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(x).ticks(d3.timeHour).tickFormat(timeFormat))
+      .call(d3.axisBottom(x).ticks().tickFormat(timeFormat))
       .selectAll("text")
       .attr("transform", "translate(-10,0)rotate(-45)")
       .style("text-anchor", "end");
@@ -179,7 +151,7 @@ export default function LivebotView() {
       .attr("class", "lineTest")
       .merge(u)
       .transition()
-      .duration(1000)
+      .duration(200)
       .attr(
         "d",
         d3
@@ -270,7 +242,15 @@ export default function LivebotView() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <DashboardItem
+          title={"Live Trades"}
+          onTimeSpanChange={async (e) => setdayinterval(+e)}
+          availableTimeSpans={[1, 0.3 , 7, 30]}
+        >
       <div id="myInvestmentChart"></div>
+        </DashboardItem>
+
+
     </>
   );
 }
