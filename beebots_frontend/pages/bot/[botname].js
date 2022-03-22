@@ -50,7 +50,16 @@ export default function Bots({ details, botname, botsId, details7d }) {
     drawTradesChart(circleDetails);
   }, [circleDetails]);
 
-  useEffect(() => {
+  useEffect(async () => {
+
+    let d1 = await fetchData(1);
+    let d7 = await fetchData(7);
+
+    setOverviewDetails(d1);
+    setProfitDetails(d7);
+    setCircleDetails(d1);
+    setInvestmentDetails(d7);
+
     return () => {
       console.log("Component onUnmount");
     };

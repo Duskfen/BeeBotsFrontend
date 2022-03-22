@@ -6,8 +6,25 @@ import styles from "./index.module.scss";
 import increasing from "../../icons/money-increase.svg";
 import decreasing from "../../icons/money-decrease.svg";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
-export default function BotsIndex({ bots }) {
+export default function BotsIndex({ botsdata }) {
+
+  const [bots, setbots] = useState(botsdata)
+
+  useEffect(async () => {
+    
+    const res = await fetch(
+      "https://beebotsbackend.azurewebsites.net/api/overview"
+    );
+    setbots(await res.json());
+  
+    return () => {
+      console.log("unmounting")
+    }
+  }, [])
+  
+
   if (!bots) {
     return <Page404 />;
   }
@@ -65,8 +82,6 @@ export async function getStaticProps() {
   );
   const data = await res.json();
 
-  console.log(data);
-
   if (!data) {
     return {
       notFound: true,
@@ -74,7 +89,7 @@ export async function getStaticProps() {
   }
 
   return {
-    props: { bots: data },
+    props: { botsdata: data },
     revalidate: 3, // In seconds // will be passed to the page component as props
   };
 }
