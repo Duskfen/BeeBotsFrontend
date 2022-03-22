@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 import DashboardItem from "../../components/dashboardItem";
 import Spinner from "../../components/spinner";
 import styles from "./[botname].module.scss";
+import Link from "next/link";
 import * as d3 from "d3";
+import Box from "../../components/box";
+import Button from "../../components/button";
 
 export default function Bots({ details, botname, botsId, details7d }) {
   const router = useRouter();
@@ -17,8 +20,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
   const [profitDetailsClusterSize, setProfitDetailsClusterSize] = useState(1);
   const [countDataRows, setCountDataRows] = useState(7);
 
-
-      const timeFormat = d3.timeFormat("%Y-%m-%d");
+  const timeFormat = d3.timeFormat("%Y-%m-%d");
 
   async function fetchData(duration) {
     const res = await fetch(
@@ -79,7 +81,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
     let gdata = [];
     let mymoney = 100;
 
-    console.log(investmentDuration)
+    console.log(investmentDuration);
 
     let test = [...botdetails];
 
@@ -91,35 +93,39 @@ export default function Bots({ details, botname, botsId, details7d }) {
       mymoney = mymoney * (1 + i.totalProfit);
     }
 
-    if(gdata.length < 1) {
+    if (gdata.length < 1) {
       d3.select("#myInvestmentChart").selectAll("*").remove();
-      d3.select("#myInvestmentChart")
-        .append("p")
-        .text("Not enough Data");
+      d3.select("#myInvestmentChart").append("p").text("Not enough Data");
       return;
     }
 
-
-    if(new Date(botdetails[botdetails.length-1].date) > new Date(Date.now() - investmentDuration * 24 * 60 * 60 * 1000)){
-      console.log((new Date(Date.now() - investmentDuration * 24 * 60 * 60 * 1000).toLocaleDateString()))
-      gdata.unshift(
-        {
-          date: d3.isoParse(new Date(Date.now() - investmentDuration * 24 * 60 * 60 * 1000).toISOString()),
-          value: 100
-        }
-      )
+    if (
+      new Date(botdetails[botdetails.length - 1].date) >
+      new Date(Date.now() - investmentDuration * 24 * 60 * 60 * 1000)
+    ) {
+      console.log(
+        new Date(
+          Date.now() - investmentDuration * 24 * 60 * 60 * 1000
+        ).toLocaleDateString()
+      );
+      gdata.unshift({
+        date: d3.isoParse(
+          new Date(
+            Date.now() - investmentDuration * 24 * 60 * 60 * 1000
+          ).toISOString()
+        ),
+        value: 100,
+      });
     }
 
-    if(new Date(botdetails[botdetails.length-1].date) < new Date(Date.now())){
-      gdata.push(
-        {
-          date: d3.isoParse(new Date(Date.now()).toISOString()),
-          value: mymoney
-        }
-      )
+    if (
+      new Date(botdetails[botdetails.length - 1].date) < new Date(Date.now())
+    ) {
+      gdata.push({
+        date: d3.isoParse(new Date(Date.now()).toISOString()),
+        value: mymoney,
+      });
     }
-
-
 
     const x = d3
       .scaleTime()
@@ -128,9 +134,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
           return d.date;
         })
       )
-      .range([0, width])
-      ;
-
+      .range([0, width]);
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
@@ -151,7 +155,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .range([height, 0]);
     svg.append("g").call(d3.axisLeft(y));
 
-
     // Add the line
     svg
       .append("path")
@@ -160,7 +163,7 @@ export default function Bots({ details, botname, botsId, details7d }) {
       .attr("stroke", "black")
       .attr("stroke-width", 1.5)
       .attr(
-        "d", 
+        "d",
         d3
           .line()
           .x(function (d) {
@@ -171,31 +174,32 @@ export default function Bots({ details, botname, botsId, details7d }) {
           })
       );
 
-      var bisect = d3.bisector(function(d) { return d.date; }).left;
+    var bisect = d3.bisector(function (d) {
+      return d.date;
+    }).left;
 
-      var selectedData = null;
-      
+    var selectedData = null;
 
-          // Create the circle that travels along the curve of chart
+    // Create the circle that travels along the curve of chart
     var focus = svg
-    .append("g")
-    .append("circle")
-    .style("fill", "none")
-    .attr("stroke", "black")
-    .attr("r", 8.5)
-    .style("opacity", 0);
+      .append("g")
+      .append("circle")
+      .style("fill", "none")
+      .attr("stroke", "black")
+      .attr("r", 8.5)
+      .style("opacity", 0);
 
-  var focusText = 
-  d3.select("#myInvestmentChart")
-  .append("div")
-  .style("opacity", "0")
-  .attr("class", "tooltip")
-  .style("background-color", "white")
-  .style("border", "solid")
-  .style("border-width", "1px")
-  .style("border-radius", "5px")
-  .style("padding", "10px");
-//
+    var focusText = d3
+      .select("#myInvestmentChart")
+      .append("div")
+      .style("opacity", "0")
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("padding", "10px");
+    //
     // Create a rect on top of the svg area: this rectangle recovers mouse position
     svg
       .append("rect")
@@ -213,27 +217,28 @@ export default function Bots({ details, botname, botsId, details7d }) {
       focusText.style("opacity", 1);
     }
 
-
     function mousemove(e) {
-      // recover coordinate we need 
+      // recover coordinate we need
       var x0 = x.invert(d3.pointer(e)[0]);
       var i = bisect(gdata, x0, 1);
       selectedData = gdata[i];
-      focus.attr("cx", x(selectedData?.date)).attr("cy", y(selectedData?.value));
+      focus
+        .attr("cx", x(selectedData?.date))
+        .attr("cy", y(selectedData?.value));
       focusText
-      .html(
-        "<p>Money: " +
-          (selectedData?.value)?.toFixed(2) +
-          "$</p><p>Date: " +
-          timeFormat(selectedData?.date) +
-          "</p>"
-      )
-      .style("opacity", "1");
+        .html(
+          "<p>Money: " +
+            selectedData?.value?.toFixed(2) +
+            "$</p><p>Date: " +
+            timeFormat(selectedData?.date) +
+            "</p>"
+        )
+        .style("opacity", "1");
     }
     function mouseout() {
       focus.style("opacity", 0);
       focusText.style("opacity", 0);
-    } 
+    }
   }
 
   function drawTradesChart(botdetails) {
@@ -385,15 +390,19 @@ export default function Bots({ details, botname, botsId, details7d }) {
           (1 + data[i].totalProfit);
       }
     }
- 
+
     let lastdate = null;
-    if(data.length < 1) lastdate = new Date(Date.now() - datarows * 24 * 60 * 60 * 1000)
+    if (data.length < 1)
+      lastdate = new Date(Date.now() - datarows * 24 * 60 * 60 * 1000);
     else lastdate = new Date(data[data.length - 1].date);
     for (let i = newdata.length - 1; i < datarows; i++) {
       lastdate.setDate(lastdate.getDate() - 1);
 
       if (i % clustersize === 0) {
-        newdata.push({ totalProfit: 0, date: timeFormat(d3.isoParse(lastdate.toISOString())) });
+        newdata.push({
+          totalProfit: 0,
+          date: timeFormat(d3.isoParse(lastdate.toISOString())),
+        });
       } else {
         newdata[newdata.length - 1].totalProfit =
           (1 + newdata[newdata.length - 1].totalProfit) * 1;
@@ -561,13 +570,23 @@ export default function Bots({ details, botname, botsId, details7d }) {
           availableTimeSpans={[7, 30, 90]}
           onTimeSpanChange={async (e) => {
             setInvestmentDetails(await fetchData(+e));
-            console.log("test", +e)
-            setinvestmentDuration(+e);}
-          }
+            console.log("test", +e);
+            setinvestmentDuration(+e);
+          }}
         >
           <div id="myInvestmentChart"></div>
         </DashboardItem>
       </div>
+
+      <Box>
+        <div className={styles.Livewrapper}>
+          <Button>
+            <Link href={`/bot/${botname}/live`}>
+              <div>Live View</div>
+            </Link>
+          </Button>
+        </div>
+      </Box>
     </>
   );
 }
@@ -593,9 +612,9 @@ export async function getStaticProps({ params }) {
       body: JSON.stringify({ Name: params.botname, Duration: 7 }),
     }
   );
-  
-  console.log(res7d.status)
-  
+
+  console.log(res7d.status);
+
   let data7d = await res7d.json();
 
   return {
@@ -619,7 +638,7 @@ export async function getStaticPaths() {
     "https://beebotsbackend.azurewebsites.net/api/overview"
   );
 
-    async function fetchData(duration) {
+  async function fetchData(duration) {
     const res = await fetch(
       "https://beebotsbackend.azurewebsites.net/api/details",
       {
@@ -629,7 +648,6 @@ export async function getStaticPaths() {
     );
     return await res.json();
   }
-
 
   const data = await res.json();
 

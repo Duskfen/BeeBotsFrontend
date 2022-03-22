@@ -3,11 +3,11 @@
    margin: var(--def_margin);
    padding: var(--def_padding);
    min-width: 150px;
-   border: 1px solid var(--neutral);
+   border: 1px solid black;
    background-color: white;
    border-radius: var(--def_borderRadius);
 }
 .button:hover{
-   background-color: var(--neutral);
+   background-color: black;
    color: white;
 }
