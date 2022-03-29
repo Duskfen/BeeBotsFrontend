@@ -395,19 +395,6 @@ export default function Bots({ details, botname, botsId, details7d }) {
       }
     }
  
-    let lastdate = null;
-    if(data.length < 1) lastdate = new Date(Date.now() - datarows * 24 * 60 * 60 * 1000)
-    else lastdate = new Date(data[data.length - 1].date);
-    for (let i = newdata.length - 1; i < datarows; i++) {
-      lastdate.setDate(lastdate.getDate() - 1);
-
-      if (i % clustersize === 0) {
-        newdata.push({ totalProfit: 0, date: timeFormat(d3.isoParse(lastdate.toISOString())) });
-      } else {
-        newdata[newdata.length - 1].totalProfit =
-          (1 + newdata[newdata.length - 1].totalProfit) * 1;
-      }
-    }
     data = newdata.reverse();
 
     // append the svg object to the body of the page
