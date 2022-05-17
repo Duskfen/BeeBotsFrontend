@@ -251,7 +251,7 @@ export default function LivebotView() {
          <DashboardItem
             title={"Live Trades"}
             onTimeSpanChange={async (e) => setdayinterval(+e)}
-            availableTimeSpans={[1, 0.3 , 7, 30]}
+            availableTimeSpans={[1, 0.3 , 7, 30, 90, 180, 360]}
          >
          <div id="myInvestmentChart"></div>
          </DashboardItem>
